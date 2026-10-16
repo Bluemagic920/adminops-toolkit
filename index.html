@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Practical PowerShell, Windows endpoint, SCCM and Intune admin scripts with clear safety notes.">
+<title>AdminOps Toolkit — IT scripts that save time</title>
+<style>
+:root{--bg:#0b1220;--panel:#121d30;--panel2:#18263b;--line:#293951;--text:#edf4ff;--muted:#9fb0c8;--accent:#68d5c4;--accent2:#a8f0e5;--warn:#ffd58a}
+*{box-sizing:border-box}body{margin:0;background:radial-gradient(ellipse at 15% 0%,#152b42 0%,var(--bg) 48%);color:var(--text);font:16px/1.55 system-ui,-apple-system,Segoe UI,Roboto,Arial,sans-serif}
+a{color:var(--accent2)}.wrap{max-width:1120px;margin:auto;padding:24px}.nav{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 28px}.brand{font-weight:800;letter-spacing:-.03em;font-size:1.2rem}.brand span{color:var(--accent)}.nav small{color:var(--muted)}
+.hero{padding:30px 0 24px;display:grid;grid-template-columns:1.4fr .8fr;gap:28px;align-items:center}.eyebrow{text-transform:uppercase;color:var(--accent);letter-spacing:.14em;font-size:.76rem;font-weight:800}h1{font-size:clamp(2.2rem,5vw,4rem);line-height:1.04;letter-spacing:-.055em;margin:12px 0 18px}.hero p{color:var(--muted);max-width:650px;font-size:1.1rem}.hero-card,.card,.tool{background:linear-gradient(145deg,var(--panel),#101a2b);border:1px solid var(--line);border-radius:18px}.hero-card{padding:22px}.metric{display:flex;gap:12px;align-items:center;margin:14px 0}.dot{width:10px;height:10px;background:var(--accent);border-radius:50%;box-shadow:0 0 20px #68d5c477}.metric b{display:block}.metric span{font-size:.9rem;color:var(--muted)}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}.btn{border:1px solid var(--line);background:var(--panel2);color:var(--text);padding:11px 15px;border-radius:10px;cursor:pointer;font-weight:700;text-decoration:none;display:inline-flex;align-items:center;justify-content:center}.btn.primary{background:var(--accent);color:#06211e;border-color:var(--accent)}.btn:hover{filter:brightness(1.08)}
+section{margin:30px 0}.section-head{display:flex;justify-content:space-between;align-items:end;gap:16px;margin-bottom:16px}.section-head h2{margin:0;font-size:1.6rem;letter-spacing:-.03em}.muted{color:var(--muted)}.toolbar{display:flex;gap:10px;flex-wrap:wrap;margin:16px 0}.search{flex:1;min-width:210px;padding:12px 14px;background:#0d1727;color:var(--text);border:1px solid var(--line);border-radius:10px;font:inherit}.filters{display:flex;gap:8px;flex-wrap:wrap}.filter{padding:9px 12px;border:1px solid var(--line);border-radius:999px;background:transparent;color:var(--muted);cursor:pointer}.filter.active{color:#06211e;background:var(--accent);border-color:var(--accent);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.tool{padding:18px;display:flex;flex-direction:column;min-height:255px}.tool .tag{color:var(--accent);font-size:.75rem;font-weight:800;text-transform:uppercase;letter-spacing:.08em}.tool h3{margin:8px 0;font-size:1.12rem}.tool p{margin:0 0 14px;color:var(--muted);font-size:.94rem}.tool .bottom{margin-top:auto;display:flex;gap:8px;flex-wrap:wrap}.tiny{font-size:.82rem}.codebox{display:none;margin-top:12px;background:#07101d;border:1px solid var(--line);padding:12px;border-radius:10px;overflow:auto;white-space:pre-wrap;color:#d7e8fa;font:12px/1.5 ui-monospace,SFMono-Regular,Consolas,monospace}.codebox.show{display:block}.note{padding:15px 17px;border:1px solid #6c552c;background:#2b2316;border-radius:12px;color:#ffdfaa}.pricing{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}.price{padding:20px}.price h3{margin:0 0 8px}.price .amount{font-size:2rem;font-weight:850;letter-spacing:-.04em}.price p,.price li{color:var(--muted)}.price ul{padding-left:20px}.price.featured{border-color:var(--accent);box-shadow:0 0 0 1px #68d5c433}.foot{border-top:1px solid var(--line);margin-top:42px;padding:22px 0;color:var(--muted);font-size:.88rem}.pill{font-size:.75rem;border:1px solid var(--line);border-radius:999px;padding:4px 8px;color:var(--muted)}
+@media(max-width:800px){.hero{grid-template-columns:1fr}.grid,.pricing{grid-template-columns:1fr}.wrap{padding:18px}.section-head{align-items:start;flex-direction:column}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <nav class="nav"><div class="brand">⌘ <span>AdminOps</span> Toolkit</div><small>Practical tools for busy IT admins</small></nav>
+  <header class="hero">
+    <div>
+      <div class="eyebrow">PowerShell · Windows · Endpoint Management</div>
+      <h1>Less time writing scripts.<br><span style="color:var(--accent)">More time getting work done.</span></h1>
+      <p>Copy-ready starting points for common IT administration tasks, with clear prerequisites, safety notes, and deployment guidance.</p>
+      <div class="actions"><a class="btn primary" href="#library">Explore free tools ↓</a><a class="btn" href="#membership">Membership plans</a></div>
+    </div>
+    <aside class="hero-card">
+      <div class="eyebrow">Built for real workflows</div>
+      <div class="metric"><i class="dot"></i><div><b>Script library</b><span>Search by task or platform</span></div></div>
+      <div class="metric"><i class="dot"></i><div><b>Deployment notes</b><span>SCCM, Intune, and command line</span></div></div>
+      <div class="metric"><i class="dot"></i><div><b>Safety first</b><span>Review and test before production</span></div></div>
+      <div class="pill">Prototype · Free starter version</div>
+    </aside>
+  </header>
+
+  <section id="library">
+    <div class="section-head"><div><div class="eyebrow">Browse resources</div><h2>Free script library</h2></div><div class="muted tiny" id="count">6 starter tools</div></div>
+    <div class="toolbar"><input id="search" class="search" type="search" placeholder="Search scripts, e.g. uninstall, service, SCCM…" aria-label="Search scripts"><div class="filters" id="filters"></div></div>
+    <div class="grid" id="tools"></div>
+  </section>
+
+  <section>
+    <div class="note"><b>Production safety:</b> These examples are starter templates, not certified production scripts. Review them, test on a non-production device, and adapt logging, detection rules, and rollback procedures to your environment. Never run unknown scripts blindly or embed secrets in scripts.</div>
+  </section>
+
+  <section id="membership">
+    <div class="section-head"><div><div class="eyebrow">Proposed offer</div><h2>Keep the useful stuff in one place</h2></div><span class="pill">Pricing to validate</span></div>
+    <div class="pricing">
+      <div class="card price"><h3>Community</h3><div class="amount">$0</div><p>For occasional tasks and discovery.</p><ul><li>Selected scripts</li><li>Basic usage notes</li><li>Copy and download</li></ul><a class="btn" href="#library">Use free tools</a></div>
+      <div class="card price featured"><h3>Admin Pro</h3><div class="amount">$19<span class="tiny">/mo</span></div><p>Proposed plan for individual admins.</p><ul><li>Curated script packs</li><li>Deployment examples</li><li>Version history and changelogs</li></ul><button class="btn primary" onclick="alert('Checkout is not connected in this prototype. Before accepting payments, set up a payment provider, terms, privacy policy, and gated delivery.')">Coming soon</button></div>
+      <div class="card price"><h3>Team Toolkit</h3><div class="amount">$49<span class="tiny">/mo</span></div><p>Proposed plan for small teams.</p><ul><li>Team-oriented resource packs</li><li>Documentation templates</li><li>Commercial-use resources</li></ul><button class="btn" onclick="alert('Team checkout is not connected yet. Validate demand before adding paid features.')">Coming soon</button></div>
+    </div>
+    <p class="muted tiny">No payment or account system is active in this demo. Do not advertise paid access until checkout, access control, support, refunds, and policies are in place.</p>
+  </section>
+  <footer class="foot">© <span id="year"></span> AdminOps Toolkit · Independent educational resource. Not affiliated with Microsoft. Always validate scripts in your own environment.</footer>
+</div>
+<script>
+const items = [
+ {title:"Find installed software",cat:"PowerShell",desc:"List installed applications from common uninstall registry locations. Useful for inventory and detection work.",tags:"inventory registry software",code:`# Read installed application registry entries (64-bit and 32-bit views)\n$paths = @(\n 'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',\n 'HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'\n)\nGet-ItemProperty $paths -ErrorAction SilentlyContinue |\n Where-Object DisplayName |\n Select-Object DisplayName, DisplayVersion, Publisher |\n Sort-Object DisplayName`},
+ {title:"Check administrator rights",cat:"PowerShell",desc:"Quickly confirm whether the current PowerShell session is elevated before running admin tasks.",tags:"admin elevated permissions",code:`$identity = [Security.Principal.WindowsIdentity]::GetCurrent()\n$principal = [Security.Principal.WindowsPrincipal]::new($identity)\n$principal.IsInRole([Security.Principal.WindowsBuiltInRole]::Administrator)`},
+ {title:"Check a Windows service",cat:"Windows",desc:"Check a service state and return a clear result for troubleshooting or monitoring.",tags:"service status troubleshooting",code:`param([Parameter(Mandatory=$true)][string]$ServiceName)\n$service = Get-Service -Name $ServiceName -ErrorAction Stop\n[pscustomobject]@{\n  Name = $service.Name\n  DisplayName = $service.DisplayName\n  Status = $service.Status\n  CanStop = $service.CanStop\n}`},
+ {title:"Create an SCCM install command",cat:"SCCM",desc:"A safe command-line template for launching a trusted MSI quietly and logging installation output.",tags:"configmgr msi install deployment",code:`# Replace the path with a trusted, tested installer source.\n$MsiPath = 'C:\\Packages\\Example\\Example.msi'\n$LogPath = 'C:\\Windows\\Temp\\Example-install.log'\nif (-not (Test-Path -LiteralPath $MsiPath)) {\n  throw \"Installer not found: $MsiPath\"\n}\n$process = Start-Process msiexec.exe -ArgumentList @(\n  '/i', \"`\"$MsiPath`\"\", '/qn', '/norestart', '/L*v', \"`\"$LogPath`\"\"\n) -Wait -PassThru\n\"Installer exit code: $($process.ExitCode)\"`},
+ {title:"Export running services",cat:"Windows",desc:"Export a timestamped CSV of running services for an easy troubleshooting snapshot.",tags:"report csv services",code:`$out = Join-Path $env:TEMP (\"RunningServices-{0:yyyyMMdd-HHmmss}.csv\" -f (Get-Date))\nGet-Service | Where-Object Status -eq 'Running' |\n Select-Object Name, DisplayName, Status |\n Export-Csv -NoTypeInformation -Path $out\nWrite-Output \"Saved report: $out\"`},
+ {title:"Intune remediation starter",cat:"Intune",desc:"A minimal detection-script pattern. Return exit code 1 when remediation is needed and 0 when compliant.",tags:"endpoint remediation detection compliance",code:`# Example detection script pattern. Replace the condition with a real check.\n$Compliant = Test-Path 'C:\\ProgramData\\Example\\compliant.marker'\nif ($Compliant) {\n  Write-Output 'Compliant: marker exists.'\n  exit 0\n} else {\n  Write-Output 'Noncompliant: remediation may be required.'\n  exit 1\n}`},
+];
+const cats = ["All",...new Set(items.map(x=>x.cat))];
+let selected = "All";
+const filters = document.getElementById("filters");
+cats.forEach(cat=>{const b=document.createElement("button");b.className="filter"+(cat===selected?" active":"");b.textContent=cat;b.onclick=()=>{selected=cat;document.querySelectorAll(".filter").forEach(x=>x.classList.toggle("active",x.textContent===cat));render()};filters.appendChild(b)});
+function render(){
+ const q=document.getElementById("search").value.toLowerCase();
+ const visible=items.filter(x=>(selected==="All"||x.cat===selected)&&(`${x.title} ${x.cat} ${x.desc} ${x.tags}`).toLowerCase().includes(q));
+ document.getElementById("count").textContent=`${visible.length} tool${visible.length===1?"":"s"} shown`;
+ const root=document.getElementById("tools");root.innerHTML="";
+ visible.forEach((x,i)=>{const card=document.createElement("article");card.className="tool";
+ card.innerHTML=`<div class="tag">${x.cat}</div><h3>${x.title}</h3><p>${x.desc}</p><div class="bottom"><button class="btn primary tiny" data-action="show">View script</button><button class="btn tiny" data-action="copy">Copy code</button><button class="btn tiny" data-action="download">Download .ps1</button></div><pre class="codebox"></pre>`;
+ const pre=card.querySelector("pre");pre.textContent=x.code;
+ card.querySelector('[data-action="show"]').onclick=()=>pre.classList.toggle("show");
+ card.querySelector('[data-action="copy"]').onclick=async e=>{try{await navigator.clipboard.writeText(x.code);e.target.textContent="Copied!"}catch{pre.classList.add("show");e.target.textContent="Select code above"}};
+ card.querySelector('[data-action="download"]').onclick=()=>{const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([x.code],{type:"text/plain"}));a.download=x.title.toLowerCase().replace(/[^a-z0-9]+/g,"-")+".ps1";a.click();URL.revokeObjectURL(a.href)};
+ root.appendChild(card)});
+}
+document.getElementById("search").addEventListener("input",render);document.getElementById("year").textContent=new Date().getFullYear();render();
+</script>
+</body>
+</html>
