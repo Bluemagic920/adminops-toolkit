@@ -182,8 +182,7 @@ if (window.supabase && !SUPABASE_URL.startsWith("PASTE_") &&
     // Refresh so RLS can return the rows allowed for the new session.
     loadDatabaseScripts();
     if (session?.user?.email) {
-      showAuthMessage("Signed in as " + session.user.email + ". Database resources are governed by Supabase security policies; built-in starter scripts remain public.
-; built-in starter scripts remain public.");
+    showAuthMessage("Signed in as " + session.user.email + ".");
     }
   });
   loadDatabaseScripts();
