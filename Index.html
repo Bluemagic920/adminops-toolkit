@@ -25,19 +25,10 @@
   <div class="auth-actions">
     <button class="btn primary" id="signup-btn" type="button">Create account</button>
     <button class="btn" id="signin-btn" type="button">Sign in</button>
-    <button class="btn" id="forgot-password-btn" type="button">Forgot password?</button>
     <button class="btn" id="signout-btn" type="button" hidden>Sign out</button>
   </div>
   
 <div id="auth-message" class="muted" role="status" aria-live="polite"></div>
-<div id="password-reset-panel" hidden style="margin-top:14px">
-  <label for="new-password">Set a new password</label>
-  <div class="auth-grid" style="margin-top:8px">
-    <input id="new-password" type="password" autocomplete="new-password" minlength="8" placeholder="New password (8+ characters)">
-    <input id="confirm-password" type="password" autocomplete="new-password" minlength="8" placeholder="Confirm new password">
-  </div>
-  <div class="auth-actions"><button class="btn primary" id="save-password-btn" type="button">Save new password</button></div>
-</div>
 </section>
 
 <header class="hero"><div><div class="eyebrow">IT admin starter library</div><h1>Scripts to speed up everyday IT work.</h1><p>Search, inspect, copy, or download practical starter scripts for inventory, troubleshooting, endpoint management, security reviews, and reporting.</p><a class="btn primary" href="#library">Browse the library ↓</a></div>
@@ -180,57 +171,18 @@ if (window.supabase && !SUPABASE_URL.startsWith("PASTE_") &&
     }
   });
 
-  document.getElementById("forgot-password-btn").addEventListener("click", async () => {
-    const email = document.getElementById("auth-email").value.trim();
-    if (!email) { showAuthMessage("Enter your email address first, then click Forgot password?", true); return; }
-    const button = document.getElementById("forgot-password-btn");
-    button.disabled = true;
-    try {
-      const {error} = await adminOpsSupabase.auth.resetPasswordForEmail(email, {
-        redirectTo: "https://bluemagic920.github.io/adminops-toolkit/"
-      });
-      if (error) throw error;
-      showAuthMessage("If this email has an account, a recovery link will be sent. Check your inbox and spam folder.");
-    } catch (error) { showAuthMessage(error.message || "Unable to request password reset.", true); }
-    finally { button.disabled = false; }
-  });
-
-  document.getElementById("save-password-btn").addEventListener("click", async () => {
-    const password = document.getElementById("new-password").value;
-    const confirmation = document.getElementById("confirm-password").value;
-    if (password.length < 8) { showAuthMessage("New password must be at least 8 characters.", true); return; }
-    if (password !== confirmation) { showAuthMessage("Passwords do not match.", true); return; }
-    const button = document.getElementById("save-password-btn");
-    button.disabled = true;
-    try {
-      const {error} = await adminOpsSupabase.auth.updateUser({password});
-      if (error) throw error;
-      document.getElementById("password-reset-panel").hidden = true;
-      document.getElementById("new-password").value = "";
-      document.getElementById("confirm-password").value = "";
-      showAuthMessage("Password updated successfully. You can now sign in using your new password.");
-      history.replaceState(null, "", location.pathname);
-    } catch (error) { showAuthMessage(error.message || "Unable to update password.", true); }
-    finally { button.disabled = false; }
-  });
-
   signOutButton.addEventListener("click", async () => {
     const { error } = await adminOpsSupabase.auth.signOut();
     if (error) showAuthMessage(error.message, true);
     else showAuthMessage("You are signed out.");
   });
 
-  adminOpsSupabase.auth.onAuthStateChange((event, session) => {
-    if (event === "PASSWORD_RECOVERY") {
-      document.getElementById("password-reset-panel").hidden = false;
-      showAuthMessage("Recovery link verified. Enter and save your new password below.");
-    }
+  adminOpsSupabase.auth.onAuthStateChange((_event, session) => {
     signOutButton.hidden = !session;
     // Refresh so RLS can return the rows allowed for the new session.
     loadDatabaseScripts();
-    if (session?.user?.email && event !== "PASSWORD_RECOVERY" &&
-        document.getElementById("password-reset-panel").hidden) {
-      showAuthMessage("Signed in as " + session.user.email + ".");
+    if (session?.user?.email) {
+    showAuthMessage("Signed in as " + session.user.email + ".");
     }
   });
   loadDatabaseScripts();
@@ -238,7 +190,6 @@ if (window.supabase && !SUPABASE_URL.startsWith("PASTE_") &&
   document.getElementById("signup-btn").addEventListener("click", () => {
     showAuthMessage("Setup required: replace SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY in index.html with your Supabase project values, then commit the file.", true);
   });
-  document.getElementById("forgot-password-btn").addEventListener("click", () => showAuthMessage("Supabase is not configured.", true));
   document.getElementById("signin-btn").addEventListener("click", () => {
     showAuthMessage("Setup required: replace SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY in index.html with your Supabase project values, then commit the file.", true);
   });
