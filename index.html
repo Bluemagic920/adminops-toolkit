@@ -41,7 +41,7 @@
 </section>
 
 <header class="hero"><div><div class="eyebrow">IT admin starter library</div><h1>Scripts to speed up everyday IT work.</h1><p>Search, inspect, copy, or download practical starter scripts for inventory, troubleshooting, endpoint management, security reviews, and reporting.</p><a class="btn primary" href="#library">Browse the library ↓</a></div>
-<aside class="panel"><div class="stat">500</div><b>Starter scripts</b><p class="muted">Organized by task with clear descriptions and downloadable .ps1 files.</p><span class="muted tiny">Prototype release · Free resources</span></aside></header>
+<aside class="panel"><div class="stat" id="hero-script-count" aria-live="polite">Loading…</div><b>Starter scripts</b><p class="muted">Organized by task with clear descriptions and downloadable .ps1 files.</p><span class="muted tiny">Prototype release · Free resources</span></aside></header>
 <section i
 d="library"><div style="display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap"><div><div class="eyebrow">Browse resources</div><h2>Script library</h2></div><div class="muted tiny" id="count">Loading scripts…</div></div>
 <p id="library-message" class="muted tiny">Loading approved database resources…</p><div class="toolbar"><input class="search" id="search" placeholder="Search e.g. Intune, uninstall, disk, event log…" aria-label="Search scripts"><div class="filters" id="filters"></div></div><div class="grid" id="tools"></div></section>
@@ -71,6 +71,7 @@ function refreshFilters(){
 function render(){
   const q=document.getElementById("search").value.toLowerCase();
   const source=allItems();
+  document.getElementById("hero-script-count").textContent=source.length.toLocaleString();
   const visible=source.filter(x=>(selected==="All"||x.cat===selected)&&(`${x.title} ${x.cat} ${x.desc} ${x.code}`).toLowerCase().includes(q));
   document.getElementById("count").textContent=`${visible.length} of ${source.length} scripts`;
   const root=document.getElementById("tools");root.innerHTML="";
