@@ -116,14 +116,39 @@ section{scroll-margin-top:22px}h2{letter-spacing:-.035em}.auth-panel,.premium-va
   :target{scroll-margin-top:15px}
 }
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+
+/* Accessible grouped site navigation — replaces overcrowded legacy nav */
+.adminops-main-nav{display:flex!important;flex-direction:row!important;align-items:center!important;justify-content:space-between!important;gap:18px!important;position:relative;z-index:100;padding:16px 12px!important;min-width:0}
+.adminops-main-nav .brand{flex-shrink:0;text-decoration:none}
+.adminops-nav-groups{display:flex;align-items:center;justify-content:flex-end;flex-wrap:wrap;gap:9px}
+.adminops-nav-dropdown{position:relative}
+.adminops-nav-dropdown>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:7px;padding:11px 15px;border:1px solid transparent;border-radius:10px;font-size:.95rem;font-weight:750;color:#e7f2ff;white-space:nowrap}
+.adminops-nav-dropdown>summary::-webkit-details-marker{display:none}
+.adminops-nav-dropdown>summary:hover,.adminops-nav-dropdown[open]>summary{background:#193552;border-color:#49688a}
+.adminops-nav-panel{position:absolute;z-index:150;top:calc(100% + 5px);left:0;min-width:245px;padding:8px;border-radius:12px;border:1px solid #456383;background:#101e32;box-shadow:0 18px 40px #0009;display:flex;flex-direction:column;gap:2px}
+.adminops-nav-panel a{display:block;color:#e3f1ff;text-decoration:none;font-weight:650;padding:12px;border-radius:8px;white-space:nowrap}
+.adminops-nav-panel a:hover,.adminops-nav-panel a:focus-visible{background:#23415e;color:#fff}
+.adminops-nav-account{display:inline-flex;padding:11px 17px;border:1px solid #78b9ef;border-radius:10px;background:#163b5a;color:#e9f5ff!important;text-decoration:none;font-weight:800;white-space:nowrap}
+.adminops-nav-account:hover{background:#245678}
+.adminops-main-nav a:focus-visible,.adminops-main-nav summary:focus-visible{outline:3px solid #9bd2ff;outline-offset:3px}
+@media(max-width:750px){
+.adminops-main-nav{align-items:flex-start!important;flex-direction:column!important}
+.adminops-nav-groups{width:100%;justify-content:flex-start;gap:5px}
+.adminops-nav-dropdown>summary{padding:10px 12px}
+.adminops-nav-panel{position:absolute;left:0;min-width:210px;max-width:calc(100vw - 32px)}
+.adminops-nav-dropdown:nth-child(3) .adminops-nav-panel{left:auto;right:0}
+.adminops-nav-account{margin-left:auto;padding:10px 12px}
+}
+@media(max-width:410px){.adminops-nav-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.adminops-nav-dropdown>summary{font-size:.84rem;padding:9px 5px;justify-content:center}.adminops-nav-account{grid-column:1/-1;justify-content:center;margin-left:0}}
 </style></head><body><div class="wrap" id="top">
-<nav class="nav"><a class="brand" href="#top">⌘ <span>AdminOps</span> Toolkit</a><details class="mobile-navigation"><summary aria-label="Open site navigation">☰ Menu</summary><div class="mobile-menu-links"><a href="#library">Free scripts</a><a href="#premium-catalog">Premium toolkits</a><a href="applications.html">IT Applications</a><a href="pro.html">Explore Pro</a><a href="dashboard.html">Member dashboard</a><a href="welcome.html">Get Started</a><a href="help.html">Help Center</a><a href="account.html">My Account</a><a href="#membership">Pricing</a></div></details><div class="nav-links"><a href="#library">Free scripts</a><a href="#premium-catalog">Premium toolkits</a><a href="#membership">Pricing</a>
-
-<a href="applications.html">IT Applications</a>
-
-
-
-<a href="pro.html">Explore Pro</a><a href="dashboard.html">Member dashboard</a><a href="welcome.html">Get Started</a><a href="help.html">Help Center</a><a href="#account">Account</a></div><a href="account.html" style="margin-left:12px">My Account</a></nav>
+<nav class="nav adminops-main-nav" aria-label="Main navigation">
+<a class="brand" href="#top">⌘ <span>AdminOps</span> Toolkit</a>
+<div class="adminops-nav-groups">
+<details class="adminops-nav-dropdown"><summary>Tools <span aria-hidden="true">▾</span></summary><div class="adminops-nav-panel"><a href="#library">Free PowerShell Scripts</a><a href="applications.html">IT Applications</a><a href="#premium-catalog">Premium Toolkits</a><a href="dashboard.html">Member Dashboard</a></div></details>
+<details class="adminops-nav-dropdown"><summary>Membership <span aria-hidden="true">▾</span></summary><div class="adminops-nav-panel"><a href="pro.html">Explore Pro</a><a href="#membership">Pricing</a><a href="#account">Sign In / Register</a><a href="account.html">My Account</a></div></details>
+<details class="adminops-nav-dropdown"><summary>Support <span aria-hidden="true">▾</span></summary><div class="adminops-nav-panel"><a href="welcome.html">Get Started</a><a href="help.html">Help Center</a></div></details>
+<a class="adminops-nav-account" href="account.html">My Account →</a>
+</div></nav>
 <header class="hero"><div><div class="eyebrow">THE IT AUTOMATION WORKSPACE</div><h1>IT automation tools built for the work you do every day.</h1><p>Find practical PowerShell scripts, browser-based IT utilities, and Pro toolkits for Windows, Intune, SCCM, Active Directory, Exchange Online, and Microsoft 365.</p><div class="hero-actions"><a class="btn primary" href="#library">Explore free scripts ↓</a><a class="btn" href="applications.html">Explore&nbsp;<span id="homepage-app-count">30</span>&nbsp;IT applications →</a><a class="btn" href="pro.html">View Pro membership →</a></div><div class="homepage-trust"><span>501 free scripts</span><span>30 IT applications</span><span>30 Pro toolkits</span><span>Free account available</span></div></div>
 <aside class="panel"><div class="stat" id="hero-script-count" aria-live="polite">Loading…</div><b>Starter scripts</b><p class="muted">Organized by task with clear descriptions and downloadable .ps1 files.</p><span class="muted tiny">Community library · Premium toolkits available</span></aside></header>
 <div class="homepage-section-heading"><h2>Choose how you want to work</h2><p>Start free, explore interactive utilities, or browse Pro packages.</p></div><div class="site-highlights" aria-label="Explore AdminOps Toolkit">
