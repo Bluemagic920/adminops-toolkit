@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Windows Performance Analyzer | AdminOps Toolkit</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#142238;--edge:#30445e;--txt:#edf4ff;--muted:#b7c8dd;--accent:#60a5fa;--green:#34d399}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b1220,#12253b);color:var(--txt);font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif;min-height:100vh}main{max-width:1050px;margin:auto;padding:28px 18px 65px}a{color:#93c5fd}.eyebrow{font-size:.85rem;color:var(--green);font-weight:700;letter-spacing:.1em;text-transform:uppercase}h1{font-size:clamp(2rem,5vw,3rem);line-height:1.1;margin:8px 0}p{color:var(--muted)}.grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.3fr);gap:20px;margin-top:24px}.card{background:var(--panel);border:1px solid var(--edge);border-radius:16px;padding:22px;box-shadow:0 12px 32px #0002}label{display:block;font-weight:650;margin:18px 0 7px}select,input,textarea{width:100%;border:1px solid #526783;border-radius:9px;padding:12px;background:#0a1728;color:var(--txt);font:inherit}select:focus,input:focus,textarea:focus,button:focus-visible{outline:3px solid var(--accent);outline-offset:2px}textarea{min-height:470px;resize:vertical;font:13px/1.55 Consolas,monospace;white-space:pre;tab-size:4}button{background:#2563eb;border:0;color:white;padding:12px 15px;border-radius:9px;font-weight:700;cursor:pointer}button:hover{background:#1d4ed8}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.secondary{background:#29435e}.secondary:hover{background:#355575}.note{background:#0c1d30;border-left:3px solid var(--green);padding:12px;border-radius:5px;color:var(--muted);margin-top:18px}.small{font-size:.88rem}.status{min-height:25px;color:var(--green);font-weight:650}.pill{display:inline-block;border:1px solid #4c6c90;border-radius:999px;padding:4px 10px;font-size:.78rem;color:#cce3ff;margin:6px 5px 0 0}@media(max-width:760px){.grid{grid-template-columns:1fr}.card{padding:16px}textarea{min-height:350px}}
+</style>
+</head>
+<body><main>
+<a href="applications.html">← IT Applications Dashboard</a>
+<div class="eyebrow" style="margin-top:22px">AdminOps Toolkit · Application #13</div>
+<h1>Windows Performance Analyzer</h1>
+<p>Build customizable, read-only PowerShell diagnostics for slow Windows computers and servers. Review the generated script before running it in your environment.</p>
+<span class="pill">CPU</span><span class="pill">Memory</span><span class="pill">Disk</span><span class="pill">Startup</span><span class="pill">Processes</span>
+<div class="grid">
+<section class="card" aria-label="Script options">
+<h2>Diagnostic options</h2>
+<label for="task">Diagnostic task</label>
+<select id="task">
+<option value="overview">System performance overview</option>
+<option value="cpu">High CPU usage</option>
+<option value="memory">Memory pressure and top consumers</option>
+<option value="disk">Disk utilization and free space</option>
+<option value="processes">Top resource-intensive processes</option>
+<option value="startup">Startup programs and recent boot</option>
+<option value="services">Automatic services not running</option>
+<option value="events">Recent performance-related system events</option>
+<option value="report">Consolidated performance report</option>
+</select>
+<label for="top">Number of top results</label>
+<input id="top" type="number" min="5" max="50" value="10" step="1">
+<label for="hours">Event lookback (hours)</label>
+<input id="hours" type="number" min="1" max="168" value="24" step="1">
+<div class="actions"><button id="generate" type="button">Generate PowerShell</button></div>
+<div class="note small"><strong>Safety:</strong> Scripts only collect information. Some queries may require an elevated PowerShell session or permissions to read Windows event logs. Generated output may contain computer names, user names, process details, or network information; review it before sharing.</div>
+</section>
+<section class="card" aria-label="Generated script">
+<h2>Generated PowerShell</h2>
+<label for="output" class="small">Review and customize before running</label>
+<textarea id="output" spellcheck="false" aria-label="Generated PowerShell script"></textarea>
+<div class="actions"><button class="secondary" id="copy" type="button">Copy script</button><button class="secondary" id="download" type="button">Download .ps1</button></div>
+<p class="status" id="status" role="status" aria-live="polite"></p>
+</section>
+</div><p class="small">© AdminOps Toolkit · Script generation runs entirely in your browser; no diagnostics are executed by this webpage.</p>
+</main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+const scripts={
+overview:`Write-Host '=== Windows Performance Overview ===' -ForegroundColor Cyan
+Get-CimInstance Win32_OperatingSystem | Select-Object CSName,Caption,LastBootUpTime,@{Name='FreeRAM_GB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}},@{Name='TotalRAM_GB';Expression={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}} | Format-List
+Get-CimInstance Win32_Processor | Select-Object Name,NumberOfLogicalProcessors,LoadPercentage | Format-Table -AutoSize
+Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | Select-Object DeviceID,@{Name='SizeGB';Expression={[math]::Round($_.Size/1GB,2)}},@{Name='FreeGB';Expression={[math]::Round($_.FreeSpace/1GB,2)}} | Format-Table -AutoSize`,
+cpu:`Write-Host '=== CPU Utilization ===' -ForegroundColor Cyan
+Get-CimInstance Win32_Processor | Select-Object Name,LoadPercentage,NumberOfLogicalProcessors | Format-Table -AutoSize
+Write-Host '=== Highest cumulative CPU time (not instantaneous utilization) ==='
+Get-Process | Sort-Object CPU -Descending | Select-Object -First {{TOP}} Name,Id,CPU,Handles,WorkingSet64 | Format-Table -AutoSize
+Write-Host '=== Sample total CPU usage over 5 seconds ==='
+Get-Counter -Counter '\\Processor(_Total)\\% Processor Time' -SampleInterval 1 -MaxSamples 5 | ForEach-Object { $_.CounterSamples | Select-Object TimeStamp,CookedValue }`,
+memory:`Write-Host '=== Memory Overview ===' -ForegroundColor Cyan
+Get-CimInstance Win32_OperatingSystem | Select-Object @{Name='TotalRAM_GB';Expression={[math]::Round($_.TotalVisibleMemorySize/1MB,2)}},@{Name='FreeRAM_GB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}} | Format-List
+Write-Host '=== Top processes by working set ==='
+Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First {{TOP}} Name,Id,@{Name='WorkingSetMB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}},@{Name='PrivateMemoryMB';Expression={[math]::Round($_.PrivateMemorySize64/1MB,1)}} | Format-Table -AutoSize`,
+disk:`Write-Host '=== Local Disk Capacity ===' -ForegroundColor Cyan
+Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | Select-Object DeviceID,VolumeName,@{Name='SizeGB';Expression={[math]::Round($_.Size/1GB,2)}},@{Name='FreeGB';Expression={[math]::Round($_.FreeSpace/1GB,2)}},@{Name='FreePct';Expression={if($_.Size){[math]::Round(100*$_.FreeSpace/$_.Size,1)}else{0}}} | Format-Table -AutoSize
+Write-Host '=== Physical Disk Information ==='
+Get-CimInstance Win32_DiskDrive | Select-Object Model,Status,InterfaceType,@{Name='SizeGB';Expression={[math]::Round($_.Size/1GB,2)}} | Format-Table -AutoSize
+Write-Host '=== Disk performance counters (if available) ==='
+try { Get-Counter -Counter '\\PhysicalDisk(_Total)\\% Disk Time','\\PhysicalDisk(_Total)\\Avg. Disk sec/Transfer' -SampleInterval 1 -MaxSamples 3 -ErrorAction Stop | ForEach-Object { $_.CounterSamples | Select-Object Path,CookedValue } } catch { Write-Warning $_.Exception.Message }`,
+processes:`Write-Host '=== Highest CPU Time ===' -ForegroundColor Cyan
+Get-Process | Sort-Object CPU -Descending | Select-Object -First {{TOP}} Name,Id,CPU,@{Name='WorkingSetMB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}} | Format-Table -AutoSize
+Write-Host '=== Highest Memory Use ==='
+Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First {{TOP}} Name,Id,@{Name='WorkingSetMB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}} | Format-Table -AutoSize
+Write-Host 'CPU column is cumulative processor time, not live CPU percent.'`,
+startup:`Write-Host '=== Recent Boot ===' -ForegroundColor Cyan
+Get-CimInstance Win32_OperatingSystem | Select-Object CSName,LastBootUpTime | Format-List
+Write-Host '=== Startup Entries ==='
+Get-CimInstance Win32_StartupCommand | Select-Object Name,Command,Location,User | Format-Table -Wrap
+Write-Host '=== Startup Registry Locations ==='
+'HKLM:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run','HKCU:\\Software\\Microsoft\\Windows\\CurrentVersion\\Run' | ForEach-Object { if(Test-Path $_){ Get-ItemProperty -Path $_ | Format-List } }
+Write-Host 'Startup items are informational; no entries are modified.'`,
+services:`Write-Host '=== Automatic Services Not Running ===' -ForegroundColor Cyan
+Get-CimInstance Win32_Service | Where-Object { $_.StartMode -eq 'Auto' -and $_.State -ne 'Running' } | Select-Object Name,DisplayName,State,StartMode | Sort-Object Name | Select-Object -First {{TOP}} | Format-Table -AutoSize
+Write-Host 'Some trigger-start automatic services may be stopped by design.'`,
+events:`Write-Host '=== Recent System Warnings and Errors ===' -ForegroundColor Cyan
+$since=(Get-Date).AddHours(-{{HOURS}})
+try { Get-WinEvent -FilterHashtable @{LogName='System';StartTime=$since;Level=2,3} -MaxEvents {{TOP}} -ErrorAction Stop | Select-Object TimeCreated,ProviderName,Id,LevelDisplayName,Message | Format-List } catch { Write-Warning ('Unable to query System events: '+$_.Exception.Message) }
+Write-Host '=== Recent Application Warnings and Errors ==='
+try { Get-WinEvent -FilterHashtable @{LogName='Application';StartTime=$since;Level=2,3} -MaxEvents {{TOP}} -ErrorAction Stop | Select-Object TimeCreated,ProviderName,Id,LevelDisplayName,Message | Format-List } catch { Write-Warning ('Unable to query Application events: '+$_.Exception.Message) }`,
+report:`Write-Host '=== Consolidated Performance Report ===' -ForegroundColor Cyan
+Write-Host ('Generated: '+(Get-Date))
+Get-CimInstance Win32_OperatingSystem | Select-Object CSName,Caption,LastBootUpTime,@{Name='FreeRAM_GB';Expression={[math]::Round($_.FreePhysicalMemory/1MB,2)}} | Format-List
+Get-CimInstance Win32_Processor | Select-Object Name,LoadPercentage,NumberOfLogicalProcessors | Format-Table -AutoSize
+Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3' | Select-Object DeviceID,@{Name='FreeGB';Expression={[math]::Round($_.FreeSpace/1GB,2)}} | Format-Table -AutoSize
+Write-Host '=== Top Memory Consumers ==='
+Get-Process | Sort-Object WorkingSet64 -Descending | Select-Object -First {{TOP}} Name,Id,@{Name='WorkingSetMB';Expression={[math]::Round($_.WorkingSet64/1MB,1)}} | Format-Table -AutoSize
+Write-Host '=== Recent System Errors ==='
+try { Get-WinEvent -FilterHashtable @{LogName='System';StartTime=(Get-Date).AddHours(-{{HOURS}});Level=2} -MaxEvents {{TOP}} -ErrorAction Stop | Select-Object TimeCreated,ProviderName,Id,Message | Format-List } catch { Write-Warning $_.Exception.Message }`
+};
+function generate(){const top=Number($('top').value),hours=Number($('hours').value);if(!Number.isInteger(top)||top<5||top>50||!Number.isInteger(hours)||hours<1||hours>168){$('status').textContent='Enter 5–50 results and 1–168 lookback hours.';return}const task=$('task').value;const header=`# AdminOps Toolkit - Windows Performance Analyzer\n# Task: ${$('task').selectedOptions[0].text}\n# Read-only diagnostics. Review before running.\n# Some operations may require elevated PowerShell.\n$ErrorActionPreference = 'Continue'\n\n`; $('output').value=header+scripts[task].replaceAll('{{TOP}}',String(top)).replaceAll('{{HOURS}}',String(hours))+'\n';$('status').textContent='PowerShell script generated.'}
+$('generate').addEventListener('click',generate);
+$('copy').addEventListener('click',async()=>{try{await navigator.clipboard.writeText($('output').value);$('status').textContent='Script copied.'}catch{ $('output').focus();$('output').select();$('status').textContent='Select and copy the script with Ctrl+C.'}});
+$('download').addEventListener('click',()=>{const blob=new Blob([$('output').value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='windows-performance-'+$('task').value+'.ps1';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='PowerShell file downloaded.'});
+generate();
+</script></body></html>
