@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Windows Software Inventory Analyzer | AdminOps Toolkit</title>
+<style>:root{color-scheme:dark}*{box-sizing:border-box}body{margin:0;background:#0b1220;color:#eef3ff;font:16px/1.55 system-ui,Segoe UI,Arial,sans-serif}.wrap{max-width:1020px;margin:auto;padding:32px 18px}a{color:#8bc4ff}h1{font-size:clamp(1.7rem,4vw,2.6rem);margin:12px 0}p{color:#c8d4e7}.eyebrow{color:#91b9ff;font-weight:700;letter-spacing:.08em}.panel{background:#152239;border:1px solid #334663;border-radius:14px;padding:24px;margin:22px 0}label{display:block;font-weight:650;margin:16px 0 6px}select,input,textarea{width:100%;background:#091527;color:#f5f8ff;border:1px solid #536785;border-radius:8px;padding:12px;font:inherit}select:focus,input:focus,textarea:focus,button:focus-visible{outline:3px solid #85bdff;outline-offset:2px}textarea{min-height:390px;font:13px/1.5 Consolas,monospace;resize:vertical}button{border:0;border-radius:8px;background:#438bff;color:white;font-weight:700;padding:12px 18px;cursor:pointer;margin:8px 8px 8px 0}button.secondary{background:#304461}button:hover{filter:brightness(1.13)}.hint{font-size:.9rem;color:#bac9de}.status{min-height:1.4em;color:#a8e4bd}.row{display:grid;grid-template-columns:1fr 1fr;gap:16px}@media(max-width:650px){.row{grid-template-columns:1fr}}.warning{border-left:4px solid #e9ba6b;padding:10px 14px;background:#2c291f;color:#ffe6b2;border-radius:4px}footer{font-size:.9rem;color:#b8c6dc;margin-top:35px}</style></head>
+<body><main class="wrap"><a href="applications.html">← IT Applications Dashboard</a><div class="eyebrow">ADMINOPS TOOLKIT · APPLICATION #20</div><h1>Windows Software Inventory Analyzer</h1><p>Generate read-only PowerShell scripts to audit installed Windows applications, versions, publishers, and installation records. Copy or download scripts for administrator review.</p>
+<section class="panel"><h2>Configure inventory report</h2><label for="task">Inventory task</label><select id="task"><option value="all">Installed software overview</option><option value="search">Search installed software by name</option><option value="versions">Software names and versions</option><option value="publisher">Filter software by publisher</option><option value="recent">Recently installed software (best effort)</option><option value="csv">Export installed software to CSV</option><option value="duplicates">Identify duplicate application names</option><option value="remote">Remote computer inventory (PowerShell remoting)</option><option value="store">Microsoft Store / AppX package inventory</option><option value="summary">Software inventory summary</option></select><div class="row"><div><label for="term">Application name or publisher filter</label><input id="term" placeholder="e.g., Adobe or Microsoft" maxlength="150"><div class="hint">Used for name/publisher searches; literal matching only.</div></div><div><label for="computer">Remote computer name</label><input id="computer" placeholder="e.g., PC-001" maxlength="80"><div class="hint">Required only for remote inventory.</div></div></div><label for="path">CSV export path</label><input id="path" value="$env:USERPROFILE\Desktop\software-inventory.csv"><div class="hint">Used only for CSV export. Defaults to your desktop.</div><button id="generate">Generate PowerShell</button><div id="status" class="status" role="status" aria-live="polite"></div></section>
+<section class="panel"><h2>Generated PowerShell</h2><p class="warning">Review scripts before running. Some inventory entries may be incomplete or have inconsistent installation dates. Remote reports require permissions and configured PowerShell remoting. Scripts do not uninstall software.</p><textarea id="output" readonly spellcheck="false" aria-label="Generated PowerShell script" placeholder="Choose a report and click Generate PowerShell."></textarea><div><button id="copy" class="secondary">Copy script</button><button id="download" class="secondary">Download .ps1</button></div></section><footer>AdminOps Toolkit · Generated scripts are provided for review and testing; validate results before using in production.</footer></main>
+<script>
+'use strict';
+const $=id=>document.getElementById(id);
+function psLiteral(s){return "'"+s.replace(/'/g,"''")+"'"}
+const inventory = `# Inventory classic desktop applications from uninstall registry keys.
+# Avoid Win32_Product: querying it can initiate MSI consistency checks.
+$uninstallKeys = @(
+  'HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',
+  'HKLM:\\SOFTWARE\\WOW6432Node\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*',
+  'HKCU:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Uninstall\\*'
+)
+$software = @(Get-ItemProperty -Path $uninstallKeys -ErrorAction SilentlyContinue |
+  Where-Object { -not [string]::IsNullOrWhiteSpace($_.DisplayName) } |
+  Select-Object @{Name='Name';Expression={$_.DisplayName}},
+                @{Name='Version';Expression={$_.DisplayVersion}},
+                @{Name='Publisher';Expression={$_.Publisher}},
+                @{Name='InstallDate';Expression={$_.InstallDate}},
+                @{Name='RegistryPath';Expression={$_.PSPath}})
+`;
+const header=`# AdminOps Toolkit - Windows Software Inventory Analyzer\n# Read-only software inventory; no software installation or removal.\n# Run in Windows PowerShell 5.1+ or PowerShell 7 on Windows.\n\n`;
+function build(){let task=$('task').value, term=$('term').value.trim(),computer=$('computer').value.trim(),path=$('path').value.trim(),script=header;
+if(['search','publisher'].includes(task)&&!term)throw Error('Enter an application name or publisher to search.');
+if(task==='remote'&&!computer)throw Error('Enter a remote computer name.');
+if(task==='csv'&&!path)throw Error('Enter a CSV export path.');
+if(task==='remote'){
+ if(!/^[a-zA-Z0-9][a-zA-Z0-9.-]{0,78}$/.test(computer))throw Error('Remote computer name must contain only letters, digits, dots, or hyphens.');
+ script+=`$computerName = ${psLiteral(computer)}\n# PowerShell remoting (WinRM) must be configured and permitted.\nInvoke-Command -ComputerName $computerName -ScriptBlock {\n`;
+ script+=inventory.split('\n').map(line=>line?'  '+line:line).join('\n');
+ script+=`\n  $software | Sort-Object Name, Version | Select-Object Name, Version, Publisher, InstallDate, RegistryPath\n}\n`;
+}else if(task==='store'){
+ script+=`# AppX/MSIX packages installed for the current user.\nGet-AppxPackage | Select-Object Name, Version, Publisher, PackageFullName | Sort-Object Name | Format-Table -AutoSize\n`;
+}else{
+ script+=inventory;
+ const reports={
+ all:`$software | Sort-Object Name, Version | Format-Table Name, Version, Publisher -AutoSize`,
+ search:`$term = ${psLiteral(term)}\n$software | Where-Object { $_.Name -like ('*' + [WildcardPattern]::Escape($term) + '*') } | Sort-Object Name | Format-Table Name, Version, Publisher -AutoSize`,
+ versions:`$software | Sort-Object Name, Version | Select-Object Name, Version, Publisher | Format-Table -AutoSize`,
+ publisher:`$term = ${psLiteral(term)}\n$software | Where-Object { $_.Publisher -like ('*' + [WildcardPattern]::Escape($term) + '*') } | Sort-Object Name | Format-Table Name, Version, Publisher -AutoSize`,
+ recent:`# InstallDate is optional and not standardized; results may be incomplete.\n$software | Where-Object { $_.InstallDate -match '^\\d{8}$' } | Sort-Object InstallDate -Descending | Select-Object -First 50 Name, Version, Publisher, InstallDate | Format-Table -AutoSize`,
+ csv:`$exportPath = ${psLiteral(path)}\n$folder = Split-Path -Parent $exportPath\nif ($folder -and -not (Test-Path -LiteralPath $folder)) { throw "Export directory does not exist: $folder" }\n$software | Sort-Object Name, Version | Export-Csv -LiteralPath $exportPath -NoTypeInformation -Encoding UTF8\nWrite-Host "Saved report to $exportPath"`,
+ duplicates:`$software | Group-Object Name | Where-Object Count -gt 1 | Sort-Object Count -Descending | Select-Object Count, Name | Format-Table -AutoSize\n# Multiple entries do not necessarily mean duplicate installations.`,
+ summary:`[pscustomobject]@{ RegistryEntries = $software.Count; UniqueApplicationNames = @($software | Select-Object -ExpandProperty Name -Unique).Count; UniquePublishers = @($software | Where-Object Publisher | Select-Object -ExpandProperty Publisher -Unique).Count } | Format-List\n$software | Group-Object Publisher | Sort-Object Count -Descending | Select-Object -First 15 Count, Name | Format-Table -AutoSize`
+ };
+ script+='\n'+reports[task]+'\n';
+}
+return script;
+}
+$('generate').addEventListener('click',()=>{try{$('output').value=build();$('status').textContent='Script generated. Review it before execution.'}catch(e){$('output').value='';$('status').textContent=e.message}});
+$('copy').addEventListener('click',async()=>{const value=$('output').value;if(!value){$('status').textContent='Generate a script first.';return}try{await navigator.clipboard.writeText(value);$('status').textContent='Script copied.'}catch(e){$('output').focus();$('output').select();$('status').textContent='Clipboard access unavailable. Press Ctrl+C to copy the selected script.'}});
+$('download').addEventListener('click',()=>{const value=$('output').value;if(!value){$('status').textContent='Generate a script first.';return}const blob=new Blob([value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='software-inventory-report.ps1';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('status').textContent='PowerShell file downloaded.'});
+</script></body></html>
