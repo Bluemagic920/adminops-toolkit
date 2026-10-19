@@ -59,6 +59,15 @@ body{background:radial-gradient(ellipse at 78% -10%,#1d4677 0%,transparent 42%),
 .pricing .price:nth-child(2){border:2px solid var(--accent)!important;box-shadow:0 16px 40px #0005}
 .plan-note{font-size:.82rem;color:var(--muted);margin-top:12px}
 @media(max-width:760px){.premium-benefits{grid-template-columns:1fr}.premium-value{padding:19px}}
+
+/* New member onboarding — informational styling only */
+.member-steps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:18px 0}
+.member-step{background:#0d2037;border:1px solid var(--line);border-radius:12px;padding:15px}
+.member-step strong{display:block;margin-bottom:5px;color:var(--text)}
+.member-step p{margin:0;color:var(--muted);font-size:.88rem}
+.member-hint{margin:12px 0;color:var(--muted);font-size:.91rem}
+.member-hint a{font-weight:700}
+@media(max-width:700px){.member-steps{grid-template-columns:1fr}}
 </style></head><body><div class="wrap" id="top">
 <nav class="nav"><a class="brand" href="#top">⌘ <span>AdminOps</span> Toolkit</a><div class="nav-links"><a href="#library">Free scripts</a><a href="#premium-catalog">Premium toolkits</a><a href="#membership">Pricing</a>
 
@@ -76,8 +85,13 @@ body{background:radial-gradient(ellipse at 78% -10%,#1d4677 0%,transparent 42%),
 </div><section id="account" class="auth-panel">
   <div class="eyebrow">Member account</div>
   <h2>Create an account or sign in</h2>
-  <p class="muted">New here? Create your free account below. Once signed in, <a href="#membership">go to the Pro membership section</a> to review the $19/month upgrade.</p>
-  <p class="muted"></p>
+  <p class="muted">Start with a free account. A paid subscription is optional and is not activated by registration alone.</p>
+  <div class="member-steps" aria-label="How Pro membership works">
+    <div class="member-step"><strong>1. Create your free account</strong><p>Enter your email and a password of at least 8 characters, then select Create account.</p></div>
+    <div class="member-step"><strong>2. Sign in</strong><p>If email confirmation is required, check your inbox first. Then return here and sign in.</p></div>
+    <div class="member-step"><strong>3. Choose Pro</strong><p>After signing in, review the <a href="#membership">$19/month Pro membership</a> and use its upgrade button when ready.</p></div>
+  </div>
+  <p class="member-hint">Already registered? Enter your credentials and select <strong>Sign in</strong>. Forgot your password? Use <strong>Forgot password?</strong> to request a reset.</p>
   <div class="auth-grid">
     <input id="auth-email" type="email" autocomplete="email" placeholder="Email address" aria-label="Email address">
     <input id="auth-password" type="password" autocomplete="current-password" minlength="8" placeholder="Password (8+ characters)" aria-label="Password">
