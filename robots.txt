@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://bluemagic920.github.io/adminops-toolkit/sitemap.xml
