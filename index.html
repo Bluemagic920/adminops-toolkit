@@ -140,6 +140,16 @@ section{scroll-margin-top:22px}h2{letter-spacing:-.035em}.auth-panel,.premium-va
 .adminops-nav-account{margin-left:auto;padding:10px 12px}
 }
 @media(max-width:410px){.adminops-nav-groups{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:4px}.adminops-nav-dropdown>summary{font-size:.84rem;padding:9px 5px;justify-content:center}.adminops-nav-account{grid-column:1/-1;justify-content:center;margin-left:0}}
+
+/* Dropdown overlap fix: closed panels never occupy space or remain visible. */
+.adminops-nav-dropdown:not([open]) > .adminops-nav-panel{display:none!important}
+.adminops-nav-dropdown[open] > .adminops-nav-panel{display:flex!important}
+.adminops-nav-dropdown:nth-child(2) > .adminops-nav-panel{left:auto;right:0}
+.adminops-nav-dropdown:nth-child(3) > .adminops-nav-panel{left:auto;right:0}
+.adminops-nav-panel{width:max-content;min-width:220px;max-width:min(310px,calc(100vw - 32px));box-sizing:border-box}
+.adminops-nav-panel a{white-space:normal;overflow-wrap:break-word}
+@media(max-width:750px){.adminops-nav-dropdown:nth-child(2) > .adminops-nav-panel{left:auto;right:0}}
+@media(max-width:410px){.adminops-nav-panel{min-width:190px;max-width:calc(100vw - 32px)}.adminops-nav-dropdown:first-child > .adminops-nav-panel{left:0;right:auto}}
 </style></head><body><div class="wrap" id="top">
 <nav class="nav adminops-main-nav" aria-label="Main navigation">
 <a class="brand" href="#top">⌘ <span>AdminOps</span> Toolkit</a>
@@ -574,4 +584,21 @@ filterPremiumCatalog();
   }
 })();
 </script>
-</body></html>
+<script>
+/* Keep exactly one dropdown open, and close on outside click or Escape. */
+(function(){
+ const menus=[...document.querySelectorAll('.adminops-nav-dropdown')];
+ menus.forEach(menu=>menu.addEventListener('toggle',()=>{
+   if(menu.open) menus.forEach(other=>{if(other!==menu)other.open=false;});
+ }));
+ document.addEventListener('click',event=>{
+   if(!event.target.closest('.adminops-nav-dropdown'))menus.forEach(menu=>menu.open=false);
+ });
+ document.addEventListener('keydown',event=>{
+   if(event.key==='Escape'){
+     const open=menus.find(menu=>menu.open);
+     if(open){open.open=false;open.querySelector('summary').focus();}
+   }
+ });
+})();
+</script></body></html>
