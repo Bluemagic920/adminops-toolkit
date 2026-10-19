@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Windows Security Analyzer | AdminOps Toolkit</title>
+<style>
+:root{color-scheme:dark;--bg:#0b1220;--panel:#152238;--line:#33445e;--text:#eaf2ff;--muted:#adbed4;--accent:#45b9ff}*{box-sizing:border-box}body{margin:0;background:linear-gradient(145deg,#0b1220,#132744);font:16px/1.55 system-ui,Segoe UI,sans-serif;color:var(--text)}main{max-width:1060px;margin:35px auto;padding:0 18px}a{color:#8ed8ff}.eyebrow{font-size:.8rem;text-transform:uppercase;letter-spacing:.12em;color:#8ed8ff}h1{font-size:clamp(1.8rem,4vw,2.8rem);margin:6px 0}p{color:var(--muted)}.panel{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;margin:20px 0;box-shadow:0 12px 30px #0002}label{display:block;font-weight:650;margin-bottom:8px}select,textarea{width:100%;border-radius:8px;border:1px solid #60728c;background:#0b1628;color:#fff;font:inherit;padding:12px}select{max-width:680px}textarea{min-height:340px;font:13px/1.55 Consolas,monospace;resize:vertical}button{cursor:pointer;border:0;border-radius:9px;padding:12px 17px;font-weight:700;background:var(--accent);color:#07192a}button.secondary{background:#304762;color:#fff;border:1px solid #526e90}button:focus-visible,select:focus-visible,textarea:focus-visible{outline:3px solid #f5c64b;outline-offset:2px}.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px}.note{border-left:3px solid #e4b95a;padding:10px 14px;background:#292d36;color:#f5e4ba;border-radius:5px}.hint{font-size:.9rem}#status{min-height:1.5em;color:#9bffc8}footer{margin:35px 0;color:var(--muted);font-size:.88rem}
+</style>
+</head>
+<body><main>
+<a href="applications.html">← IT Applications Dashboard</a>
+<div class="eyebrow" style="margin-top:24px">AdminOps Toolkit · Application 14</div>
+<h1>Windows Security Analyzer</h1>
+<p>Build read-only PowerShell diagnostics for Microsoft Defender, Windows Firewall, account security, and Windows security events.</p>
+<section class="panel"><label for="task">Choose a security diagnostic</label><select id="task">
+<option value="overview">Windows security health overview</option>
+<option value="defender">Microsoft Defender protection status</option>
+<option value="threats">Defender threat detection history</option>
+<option value="firewall">Windows Firewall profile status</option>
+<option value="rules">Enabled inbound firewall rules</option>
+<option value="admins">Local Administrators group membership</option>
+<option value="events">Recent security audit events</option>
+<option value="updates">Defender signature age and security updates</option>
+<option value="bitlocker">BitLocker protection status</option>
+</select><p id="description" class="hint"></p><div class="actions"><button id="generate">Generate PowerShell</button></div></section>
+<section class="panel"><label for="output">Generated PowerShell script</label><textarea id="output" spellcheck="false" aria-label="Generated PowerShell script" placeholder="Select a diagnostic and click Generate PowerShell."></textarea><div class="actions"><button id="copy" class="secondary">Copy script</button><button id="download" class="secondary">Download .ps1</button></div><p id="status" role="status" aria-live="polite"></p></section>
+<div class="note"><strong>Security guidance:</strong> Generated scripts are intended for authorized administrators. Review them before execution, use an elevated PowerShell session only when required, and avoid sharing reports that contain usernames, hostnames, or security configurations. Security event access may require administrative privileges. No scripts run in your browser.</div>
+<footer>AdminOps Toolkit · Diagnostic script generator · Windows PowerShell 5.1 / PowerShell 7 compatibility may vary by module.</footer>
+</main>
+<script>
+'use strict';
+const tasks={
+overview:{name:'Windows security health overview',desc:'Summarize Defender, firewall, TPM, and BitLocker protection without exposing recovery secrets.',code:`Write-Host '=== WINDOWS SECURITY HEALTH ==='\nGet-CimInstance Win32_OperatingSystem | Select-Object CSName,Caption,Version,LastBootUpTime\nGet-MpComputerStatus | Select-Object AMServiceEnabled,AntivirusEnabled,RealTimeProtectionEnabled,AntispywareEnabled,AntivirusSignatureLastUpdated\nGet-NetFirewallProfile | Select-Object Name,Enabled,DefaultInboundAction,DefaultOutboundAction\nGet-Tpm | Select-Object TpmPresent,TpmReady,TpmEnabled\nGet-BitLockerVolume | Select-Object MountPoint,VolumeStatus,ProtectionStatus,EncryptionPercentage`},
+defender:{name:'Microsoft Defender protection status',desc:'Inspect real-time protection, engine status, and signature versions.',code:`Get-MpComputerStatus | Select-Object AMServiceEnabled,AntivirusEnabled,RealTimeProtectionEnabled,BehaviorMonitorEnabled,IoavProtectionEnabled,NISEnabled,AntivirusSignatureVersion,AntivirusSignatureLastUpdated,AMProductVersion | Format-List\nGet-MpPreference | Select-Object DisableRealtimeMonitoring,DisableBehaviorMonitoring,PUAProtection,MAPSReporting | Format-List`},
+threats:{name:'Defender threat detection history',desc:'Review recent detections and remediation status; may include sensitive file paths.',code:`Get-MpThreatDetection | Sort-Object InitialDetectionTime -Descending | Select-Object -First 30 InitialDetectionTime,ThreatID,ActionSuccess,Resources | Format-List\nGet-MpThreat | Select-Object ThreatID,ThreatName,SeverityID,CategoryID | Format-Table -AutoSize`},
+firewall:{name:'Windows Firewall profile status',desc:'Display Domain, Private, and Public firewall profile settings.',code:`Get-NetFirewallProfile | Select-Object Name,Enabled,DefaultInboundAction,DefaultOutboundAction,LogAllowed,LogBlocked,LogFileName | Format-Table -AutoSize`},
+rules:{name:'Enabled inbound firewall rules',desc:'List enabled inbound firewall rules; output can be lengthy.',code:`Get-NetFirewallRule -Direction Inbound -Enabled True | Select-Object DisplayName,Profile,Action,Direction,PolicyStoreSourceType | Sort-Object DisplayName | Format-Table -AutoSize`},
+admins:{name:'Local Administrators group membership',desc:'Identify accounts in the built-in local Administrators group by its well-known SID.',code:`$group = Get-LocalGroup -SID 'S-1-5-32-544'\nGet-LocalGroupMember -Group $group.Name | Select-Object Name,ObjectClass,PrincipalSource | Format-Table -AutoSize`},
+events:{name:'Recent security audit events',desc:'Show recent logon successes/failures and account lockouts from the Security event log.',code:`$ids = 4624,4625,4740\nGet-WinEvent -FilterHashtable @{LogName='Security';Id=$ids;StartTime=(Get-Date).AddDays(-2)} -MaxEvents 100 -ErrorAction Stop | Select-Object TimeCreated,Id,LevelDisplayName,ProviderName,Message | Format-List`},
+updates:{name:'Defender signature age and security updates',desc:'Check antivirus signature recency and recently installed Windows updates.',code:`$status = Get-MpComputerStatus\n[pscustomobject]@{SignatureVersion=$status.AntivirusSignatureVersion;SignatureUpdated=$status.AntivirusSignatureLastUpdated;SignatureAgeDays=if($status.AntivirusSignatureLastUpdated){[math]::Round(((Get-Date)-$status.AntivirusSignatureLastUpdated).TotalDays,1)}else{$null}} | Format-List\nGet-HotFix | Sort-Object InstalledOn -Descending | Select-Object -First 20 HotFixID,Description,InstalledOn | Format-Table -AutoSize`},
+bitlocker:{name:'BitLocker protection status',desc:'Report volume protection and encryption state; recovery passwords are deliberately excluded.',code:`Get-BitLockerVolume | Select-Object MountPoint,VolumeType,VolumeStatus,ProtectionStatus,EncryptionPercentage,EncryptionMethod | Format-Table -AutoSize`}
+};
+const task=document.getElementById('task'),output=document.getElementById('output'),status=document.getElementById('status'),desc=document.getElementById('description');
+function updateDescription(){desc.textContent=tasks[task.value].desc;status.textContent=''}
+function generate(){const t=tasks[task.value];output.value=`# AdminOps Toolkit — ${t.name}\n# Read-only diagnostic. Review before running on an authorized system.\n# Some commands require administrator privileges or Windows-specific modules.\n$ErrorActionPreference = 'Stop'\n\n${t.code}\n`;status.textContent='PowerShell script generated.'}
+task.addEventListener('change',updateDescription);document.getElementById('generate').addEventListener('click',generate);
+document.getElementById('copy').addEventListener('click',async()=>{if(!output.value.trim()){status.textContent='Generate a script first.';return}try{await navigator.clipboard.writeText(output.value);status.textContent='Script copied to clipboard.'}catch(e){output.focus();output.select();status.textContent='Clipboard access unavailable. Press Ctrl+C to copy selected script.'}});
+document.getElementById('download').addEventListener('click',()=>{if(!output.value.trim()){status.textContent='Generate a script first.';return}const blob=new Blob([output.value],{type:'text/plain;charset=utf-8'}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='windows-security-'+task.value+'.ps1';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);status.textContent='PowerShell script downloaded.'});updateDescription();
+</script></body></html>
