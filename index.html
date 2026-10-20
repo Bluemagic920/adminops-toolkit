@@ -150,6 +150,14 @@ section{scroll-margin-top:22px}h2{letter-spacing:-.035em}.auth-panel,.premium-va
 .adminops-nav-panel a{white-space:normal;overflow-wrap:break-word}
 @media(max-width:750px){.adminops-nav-dropdown:nth-child(2) > .adminops-nav-panel{left:auto;right:0}}
 @media(max-width:410px){.adminops-nav-panel{min-width:190px;max-width:calc(100vw - 32px)}.adminops-nav-dropdown:first-child > .adminops-nav-panel{left:0;right:auto}}
+
+/* Featured Windows software release */
+.uninstaller-feature{padding:26px;border:1px solid #4a729b;border-radius:18px;background:linear-gradient(135deg,#162e4b,#0e1b2f)}
+.uninstaller-feature>p{color:var(--muted);max-width:800px}
+.uninstaller-editions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:15px;margin-top:18px}
+.uninstaller-edition{border:1px solid var(--line);border-radius:14px;background:#0d1d32;padding:20px;display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.uninstaller-edition h3{margin:0}.uninstaller-edition p{color:var(--muted);margin:0 0 8px}.uninstaller-edition .btn{margin-top:auto}
+@media(max-width:700px){.uninstaller-editions{grid-template-columns:1fr}.uninstaller-feature{padding:18px}}
 </style></head><body><div class="wrap" id="top">
 <nav class="nav adminops-main-nav" aria-label="Main navigation">
 <a class="brand" href="#top">⌘ <span>AdminOps</span> Toolkit</a>
@@ -195,6 +203,28 @@ section{scroll-margin-top:22px}h2{letter-spacing:-.035em}.auth-panel,.premium-va
   </div>
   <div class="auth-actions"><button class="btn primary" id="save-password-btn" type="button">Save new password</button></div>
 </div>
+</section>
+
+<section id="software-uninstaller" class="uninstaller-feature" aria-labelledby="uninstaller-heading">
+  <div class="eyebrow">Featured Windows desktop tools</div>
+  <h2 id="uninstaller-heading">AdminOps Software Inventory &amp; Uninstaller</h2>
+  <p>Inventory installed applications for free, or use Pro for confirmed Windows software removal, enterprise command-line workflows, and uninstall logging.</p>
+  <div class="uninstaller-editions">
+    <article class="uninstaller-edition">
+      <span class="tag">Free · Windows</span>
+      <h3>Software Inventory v1.3</h3>
+      <p>Scan installed software, search application names, and export CSV reports. Read-only: no uninstall functionality.</p>
+      <a class="btn primary" href="AdminOps-Software-Inventory-Free-v1.3.zip" download>Download Free Inventory ZIP ↓</a>
+    </article>
+    <article class="uninstaller-edition">
+      <span class="tag">Pro · Windows</span>
+      <h3>Software Uninstaller v1.3.1</h3>
+      <p>GUI and enterprise PowerShell CLI, silent or interactive uninstall where supported, confirmation prompts, and operation logs. Included with the $19/month Pro membership.</p>
+      <a class="btn primary" href="dashboard.html#software-uninstaller">Access Pro download →</a>
+      <a href="pro.html">Explore Pro membership</a>
+    </article>
+  </div>
+  <p class="tiny">Review software and test on non-production devices before uninstalling applications. Pro downloads require server-verified membership.</p>
 </section>
 <section id="library"><div style="display:flex;justify-content:space-between;gap:12px;align-items:end;flex-wrap:wrap"><div><div class="eyebrow">Browse resources</div><h2>Script library</h2></div><div class="muted tiny" id="count">Loading scripts…</div></div>
 <p id="library-message" class="muted tiny">Loading approved database resources…</p><div class="toolbar"><input class="search" id="search" placeholder="Search e.g. Intune, uninstall, disk, event log…" aria-label="Search scripts"><div class="filters" id="filters"></div></div><div class="grid" id="tools"></div></section>
