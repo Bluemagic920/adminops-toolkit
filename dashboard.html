@@ -91,6 +91,12 @@
 <p>View device and driver inventory, identify devices reporting errors, export CSV/HTML reports, and back up third-party drivers. This edition does not uninstall devices, disable hardware, or force driver updates.</p>
 <div class="actions"><button class="btn primary" type="button" id="driver-premium-download">Download Premium Driver Manager ZIP →</button><a class="btn" href="account.html">Check Pro membership →</a></div>
 <p id="driver-premium-message" class="download-note" role="status" aria-live="polite">Sign in with an active Pro membership to download. Authorization is verified by the server.</p>
+</section><section class="panel" id="premium-windows-update-manager" aria-labelledby="premium-wum-title">
+<div class="eyebrow">Premium Windows administration · Release candidate</div>
+<h2 id="premium-wum-title">Windows Update Manager Premium — Stage 10.4</h2>
+<p>Windows desktop installer with read-only update scanning, diagnostics, activity logs, Premium sign-in, and safety validation. Update installation, scheduled installation, and automatic restarts are disabled. Release-candidate testing only.</p>
+<div class="actions"><button class="btn primary" type="button" id="wum-premium-download">Download Premium Installer ZIP →</button><a class="btn" href="account.html">Check Pro membership →</a></div>
+<p id="wum-premium-message" class="download-note" role="status" aria-live="polite">Downloads require a signed-in account and an active Pro subscription verified by the server.</p>
 </section><section class="panel" id="premium-technician-toolbox" aria-labelledby="premium-toolbox-title">
 <div class="eyebrow">Premium Windows diagnostics</div>
 <h2 id="premium-toolbox-title">IT Technician Toolbox Premium v1.0.2</h2>
@@ -284,6 +290,44 @@ document.getElementById('driver-premium-download').addEventListener('click', asy
   }catch(error){message.textContent=error.message||'Download failed.';}
   finally{button.disabled=false;}
  });
+
+// Windows Update Manager Premium: download is authorized by the Cloudflare Worker.
+document.getElementById('wum-premium-download').addEventListener('click', async () => {
+ const button=document.getElementById('wum-premium-download');
+ const message=document.getElementById('wum-premium-message');
+ const filename='AdminOps-Windows-Update-Manager-Premium-Stage10.4-Installer.zip';
+ button.disabled=true;
+ message.textContent='Verifying subscription and preparing secure download…';
+ try {
+  if(!memberClient)throw new Error('Authentication is unavailable. Refresh the page.');
+  const {data,error}=await memberClient.auth.getSession();
+  if(error)throw error;
+  const token=data.session?.access_token;
+  if(!token)throw new Error('Please sign in to download Windows Update Manager Premium.');
+  const r=await fetch(API_URL+'/api/download?file='+encodeURIComponent(filename),{
+   method:'GET',headers:{Authorization:'Bearer '+token},cache:'no-store'
+  });
+  if(!r.ok){
+   let detail='';
+   try{const body=await r.json();detail=body.error||body.message||'';}catch(_){}
+   if(r.status===401)throw new Error('Please sign in again to download.');
+   if(r.status===403)throw new Error('An active Pro subscription is required. Check My Account.');
+   if(r.status===404)throw new Error('Installer not found in private storage. Contact support.');
+   throw new Error(detail||('Download failed (HTTP '+r.status+').'));
+  }
+  const type=(r.headers.get('content-type')||'').toLowerCase();
+  if(type && !type.includes('application/zip') && !type.includes('application/octet-stream'))throw new Error('Unexpected file type. Download stopped.');
+  const blob=await r.blob();
+  if(!blob.size)throw new Error('Server returned an empty file.');
+  const objectUrl=URL.createObjectURL(blob);
+  try{
+   const link=document.createElement('a');link.href=objectUrl;link.download=filename;
+   document.body.appendChild(link);link.click();link.remove();
+  }finally{setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);}
+  message.textContent='Premium installer ZIP download started.';
+ }catch(error){message.textContent=error.message||'Download failed.';}
+ finally{button.disabled=false;}
+});
 
 document.getElementById('membership-retry').addEventListener('click',checkMembership);
 if(memberClient)memberClient.auth.onAuthStateChange(()=>{setTimeout(checkMembership,0)});
