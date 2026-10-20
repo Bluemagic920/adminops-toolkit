@@ -62,7 +62,7 @@
 <div class="personal-head"><div><h2 id="personalized-title">Your workspace</h2><p>Quickly return to the tools you use most.</p></div><span class="status-pill" id="personal-membership">Checking membership…</span></div>
 <div class="personal-grid"><div class="personal-box"><h3>★ My favorite toolkits <span class="muted" id="personal-favorite-count"></span></h3><ul id="personal-favorite-list" class="personal-list"><li class="personal-small">Your saved toolkits will appear here.</li></ul><p class="personal-small">Favorites are saved only in this browser. They do not change your subscription or download permissions.</p><button class="btn" type="button" id="personal-show-favorites">Browse my favorites →</button></div>
 <div class="personal-box"><h3>Quick shortcuts</h3><div class="personal-actions"><a class="btn primary" href="#downloads-title">Browse Premium toolkits →</a><a class="btn" href="index.html#premium-catalog">Secure downloads →</a><a class="btn" href="applications.html">Free IT applications →</a><a class="btn" href="account.html">My Account →</a><a class="btn" href="help.html">Help Center →</a></div><p class="personal-small" id="personal-membership-note">Membership status is verified by the existing backend.</p></div></div>
-</section><div class="panel"><h2>Premium access</h2><p>This dashboard lists toolkits. For security, subscription verification and download authorization happen through the existing homepage and server—not this static page.</p><div class="actions"><a class="btn primary" href="index.html#account">Sign in or create account →</a><a class="btn" href="index.html#membership">Check membership status →</a><a class="btn" href="index.html#premium-catalog">Open secure download catalog →</a></div></div><p class="note">Premium ZIP downloads require an active subscription. Live payment-to-access activation has not yet been verified. Review and test all scripts before production use.</p><section class="panel" id="software-uninstaller" aria-labelledby="uninstaller-title">
+</section><div class="panel"><h2>Premium access</h2><p>This dashboard lists toolkits. For security, subscription verification and download authorization happen through the existing homepage and server—not this static page.</p><div class="actions"><a class="btn primary" href="index.html#account">Sign in or create account →</a><a class="btn" href="index.html#membership">Check membership status →</a><a class="btn" href="index.html#premium-catalog">Open secure download catalog →</a></div></div><p class="note">Premium ZIP downloads require an active subscription. Review and test all scripts before production use.</p><section class="panel" id="software-uninstaller" aria-labelledby="uninstaller-title">
 <div class="eyebrow">Windows administration</div>
 <h2 id="uninstaller-title">AdminOps Software Inventory &amp; Uninstaller</h2>
 <p>Download the read-only Free inventory tool, or use your active Pro membership to access the full GUI and Enterprise uninstaller.</p>
@@ -79,6 +79,12 @@
   </article>
 </div>
 <p id="uninstaller-download-message" class="download-note" role="status" aria-live="polite">Pro ZIP downloads are verified by the subscription server.</p>
+</section><section class="panel" id="premium-driver-manager" aria-labelledby="premium-driver-title">
+<div class="eyebrow">Premium Windows administration</div>
+<h2 id="premium-driver-title">Driver &amp; Device Manager Premium v1.0.0</h2>
+<p>View device and driver inventory, identify devices reporting errors, export CSV/HTML reports, and back up third-party drivers. This edition does not uninstall devices, disable hardware, or force driver updates.</p>
+<div class="actions"><button class="btn primary" type="button" id="driver-premium-download">Download Premium Driver Manager ZIP →</button><a class="btn" href="account.html">Check Pro membership →</a></div>
+<p id="driver-premium-message" class="download-note" role="status" aria-live="polite">Sign in with an active Pro membership to download. Authorization is verified by the server.</p>
 </section><section class="download-center" aria-labelledby="downloads-title"><div class="catalog-heading"><div><div class="eyebrow">Premium resources</div><h2 id="downloads-title">Premium Download Center <span class="muted" id="count"></span></h2><p>Find the right ZIP package, save favorites, and continue to the server-protected downloads.</p></div><a class="btn primary" href="index.html#premium-catalog">Open secure downloads →</a></div><div class="download-summary" aria-label="Catalog summary"><span>30 Premium ZIP toolkits</span><span id="category-total">6 categories</span><span id="favorite-total">0 favorites</span></div><div class="toolbar download-toolbar"><input type="search" id="search" placeholder="Search names, categories or tasks…" aria-label="Search toolkits"><select id="category" aria-label="Filter by category"><option value="All">All categories</option></select><select id="sort" aria-label="Sort toolkits"><option value="az">Name A–Z</option><option value="za">Name Z–A</option><option value="category">Category</option><option value="favorites">Favorites first</option><option value="only-favorites">Only favorites</option></select></div><div id="grid" class="grid" aria-live="polite"></div><p id="empty" class="empty" hidden>No toolkits match your search. Try a different keyword or category.</p><p class="download-note">Favorites are stored only in this browser. All Premium ZIP requests must still pass authorization through the existing homepage and Cloudflare backend; this dashboard does not expose ZIP files directly.</p></section></main><footer><p>© <span id="year"></span> AdminOps Toolkit · Independent educational resource.</p></footer></div><script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script><script>
 const toolkits=[{"category": "Endpoints", "name": "Workstation Health Check Pro", "file": "AdminOps-Workstation-Health-Pro.zip"}, {"category": "Endpoints", "name": "SCCM / Intune Troubleshooting Pro", "file": "AdminOps-SCCM-Intune-Troubleshooting-Pro.zip"}, {"category": "Microsoft 365", "name": "Exchange Online & Microsoft 365 Pro", "file": "AdminOps-Exchange-M365-Pro.zip"}, {"category": "Identity & AD", "name": "Active Directory & Entra ID Pro", "file": "AdminOps-AD-Entra-Pro.zip"}, {"category": "Windows & IT", "name": "Windows Automation & Repair Pro", "file": "AdminOps-Windows-Automation-Repair-Pro.zip"}, {"category": "Microsoft 365", "name": "Microsoft 365 Security & Compliance Pro", "file": "AdminOps-M365-Security-Compliance-Pro.zip"}, {"category": "Windows & IT", "name": "Windows Server Health & Monitoring Pro", "file": "AdminOps-Windows-Server-Monitoring-Pro.zip"}, {"category": "Networking", "name": "Network Diagnostics & Troubleshooting Pro", "file": "AdminOps-Network-Diagnostics-Pro.zip"}, {"category": "Microsoft 365", "name": "Microsoft 365 License & User Reporting Pro", "file": "AdminOps-M365-License-Reporting-Pro.zip"}, {"category": "Windows & IT", "name": "IT Asset Inventory & Audit Pro", "file": "AdminOps-IT-Asset-Audit-Pro.zip"}, {"category": "Security", "name": "Windows Security Audit Pro", "file": "AdminOps-Windows-Security-Audit-Pro.zip"}, {"category": "Windows & IT", "name": "Windows Event Log Pro", "file": "AdminOps-Windows-Event-Log-Pro.zip"}, {"category": "Identity & AD", "name": "AD Domain Health Pro", "file": "AdminOps-AD-Domain-Health-Pro.zip"}, {"category": "Microsoft 365", "name": "Microsoft 365 Identity Audit Pro", "file": "AdminOps-M365-Identity-Audit-Pro.zip"}, {"category": "Endpoints", "name": "Endpoint Compliance Audit Pro", "file": "AdminOps-Endpoint-Compliance-Audit-Pro.zip"}, {"category": "Networking", "name": "DNS & DHCP Diagnostics Pro", "file": "AdminOps-DNS-DHCP-Diagnostics-Pro.zip"}, {"category": "Windows & IT", "name": "Storage Capacity Audit Pro", "file": "AdminOps-Storage-Capacity-Audit-Pro.zip"}, {"category": "Windows & IT", "name": "Scheduled Task Audit Pro", "file": "AdminOps-Scheduled-Task-Audit-Pro.zip"}, {"category": "Networking", "name": "Network Connectivity Audit Pro", "file": "AdminOps-Network-Connectivity-Audit-Pro.zip"}, {"category": "Windows & IT", "name": "IT Troubleshooting Reports Pro", "file": "AdminOps-IT-Troubleshooting-Reports-Pro.zip"}, {"category": "Endpoints", "name": "Intune Device Management Pro", "file": "AdminOps-Intune-Device-Management-Pro.zip"}, {"category": "Endpoints", "name": "SCCM Client Health & Repair Pro", "file": "AdminOps-SCCM-Client-Health-Pro.zip"}, {"category": "Microsoft 365", "name": "Exchange Online Mailbox Auditing Pro", "file": "AdminOps-Exchange-Mailbox-Auditing-Pro.zip"}, {"category": "Microsoft 365", "name": "Microsoft Teams Administration Pro", "file": "AdminOps-Teams-Administration-Pro.zip"}, {"category": "Windows & IT", "name": "Windows Update Management Pro", "file": "AdminOps-Windows-Update-Management-Pro.zip"}, {"category": "Identity & AD", "name": "Active Directory Group Policy Audit Pro", "file": "AdminOps-Group-Policy-Audit-Pro.zip"}, {"category": "Security", "name": "Microsoft Defender Security Pro", "file": "AdminOps-Microsoft-Defender-Security-Pro.zip"}, {"category": "Windows & IT", "name": "Windows 11 Deployment Readiness Pro", "file": "AdminOps-Windows11-Readiness-Pro.zip"}, {"category": "Microsoft 365", "name": "SharePoint & OneDrive Pro", "file": "AdminOps-SharePoint-OneDrive-Pro.zip"}, {"category": "Windows & IT", "name": "IT Help Desk Automation Pro", "file": "AdminOps-IT-Helpdesk-Automation-Pro.zip"}];const grid=document.getElementById('grid'),search=document.getElementById('search'),category=document.getElementById('category'),sort=document.getElementById('sort');
 const cats=[...new Set(toolkits.map(t=>t.category))].sort();
@@ -192,6 +198,41 @@ document.getElementById('uninstaller-pro-download').addEventListener('click', as
     message.textContent='Pro ZIP download started.';
   }catch(error){message.textContent=error.message||'Download failed.';}
   finally{button.disabled=false;}
+});
+// Driver Manager Premium: use the production Worker endpoint and server-side subscription authorization.
+document.getElementById('driver-premium-download').addEventListener('click', async () => {
+ const button=document.getElementById('driver-premium-download');
+ const message=document.getElementById('driver-premium-message');
+ const filename='AdminOps-Driver-Device-Manager-Premium-v1.0.0.zip';
+ button.disabled=true;
+ message.textContent='Checking subscription and preparing secure download…';
+ try {
+  if(!memberClient)throw new Error('Authentication is unavailable. Refresh and try again.');
+  const {data,error}=await memberClient.auth.getSession();
+  if(error)throw error;
+  const token=data.session?.access_token;
+  if(!token)throw new Error('Please sign in to download Premium Driver Manager.');
+  const response=await fetch(API_URL+'/api/download?file='+encodeURIComponent(filename),{
+   headers:{Authorization:'Bearer '+token},cache:'no-store'
+  });
+  if(!response.ok){
+   let detail='';
+   try{const body=await response.json();detail=body.error||body.message||'';}catch(_){}
+   if(response.status===401)throw new Error('Your session is invalid or expired. Please sign in again.');
+   if(response.status===403)throw new Error('An active Pro subscription is required. Check My Account.');
+   if(response.status===404)throw new Error('Premium ZIP not found in private storage. Contact support.');
+   throw new Error(detail||('Download failed (HTTP '+response.status+').'));
+  }
+  const blob=await response.blob();
+  if(!blob.size)throw new Error('The server returned an empty file.');
+  const objectUrl=URL.createObjectURL(blob);
+  const link=document.createElement('a');
+  link.href=objectUrl;link.download=filename;
+  document.body.appendChild(link);link.click();link.remove();
+  setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);
+  message.textContent='Premium Driver Manager ZIP download started.';
+ }catch(error){message.textContent=error.message||'Download failed.';}
+ finally{button.disabled=false;}
 });
 document.getElementById('membership-retry').addEventListener('click',checkMembership);
 if(memberClient)memberClient.auth.onAuthStateChange(()=>{setTimeout(checkMembership,0)});
