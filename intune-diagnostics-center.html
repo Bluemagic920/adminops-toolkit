@@ -55,7 +55,13 @@ gtag('config', 'G-W0PLMDQ7FC');
 <p>Continue with the <a href="intune-device-compliance-analyzer.html">Intune Device Compliance Analyzer</a>, <a href="sccm-client-repair-toolkit.html">SCCM Client Repair Toolkit</a>, <a href="sccm-query-builder.html">SCCM Query Builder</a>, or <a href="windows-event-log-analyzer.html">Windows Event Log Analyzer</a>. For additional downloads, <a href="pro.html">explore AdminOps Toolkit Pro</a>.</p>
 <p class="muted">For current Microsoft service incidents, consult your organization's Microsoft 365 admin center Service health dashboard. Always verify remediation against official Microsoft documentation.</p>
 <p><a href="applications.html">Browse more free IT administration tools</a> · <a href="index.html">AdminOps Toolkit homepage</a></p>
-</section><div id="feedback" role="status" aria-live="polite"></div><p class="muted">AdminOps Toolkit • Browser-only diagnostic helper. Always verify commands and procedures against your organization's policies and current Microsoft documentation.</p></main>
+</section><div id="feedback" role="status" aria-live="polite"></div><p class="muted">AdminOps Toolkit • Browser-only diagnostic helper. Always verify commands and procedures against your organization's policies and current Microsoft documentation.</p><section class="panel" id="intune-mdm-guide-resource" aria-labelledby="intune-mdm-guide-heading" style="margin-top:22px">
+  <div class="eyebrow">RELATED FREE TROUBLESHOOTING GUIDE</div>
+  <h2 id="intune-mdm-guide-heading">Microsoft Intune MDM Troubleshooting Guide</h2>
+  <p>Need more detail on enrollment errors, <code>MdmDiagnosticsTool.exe</code>, DeviceManagement-Enterprise-Diagnostics-Provider event logs, or <code>dsregcmd /status</code>? Read the step-by-step guide, then return here to generate diagnostic commands.</p>
+  <p><a href="intune-mdm-troubleshooting-guide.html" style="display:inline-block;padding:11px 16px;border-radius:9px;border:1px solid #69b9ff;background:#173653;color:#eaf5ff;font-weight:750;text-decoration:none">Read the free Intune MDM troubleshooting guide →</a></p>
+</section>
+</main>
 <script>
 'use strict';
 const $=id=>document.getElementById(id);const tabs=[...document.querySelectorAll('[data-tab]')];tabs.forEach(b=>b.addEventListener('click',()=>{tabs.forEach(t=>t.classList.toggle('active',t===b));for(const t of tabs)$(t.dataset.tab).classList.toggle('hidden',t!==b);$('feedback').textContent='';}));
