@@ -38,4 +38,32 @@
 <section class="section"><div class="eyebrow">Simple choice</div><h2>Free tools stay free</h2><p>The free script library and 39 browser-based applications remain free. Pro adds access to the 65-resource Premium download catalog.</p><table class="compare"><thead><tr><th>Included</th><th>Community</th><th>Pro</th></tr></thead><tbody><tr><td>Free PowerShell script library</td><td>Yes</td><td>Yes</td></tr><tr><td>39 browser-based IT applications</td><td>Yes</td><td>Yes</td></tr><tr><td>65 Premium downloadable resources</td><td>No</td><td>Yes</td></tr><tr><td>Monthly price</td><td>$0</td><td>$19</td></tr></tbody></table></section>
 <section class="section faq"><div class="eyebrow">Common questions</div><h2>Before you subscribe</h2><details><summary>How do I get Premium access?</summary><p>Visit the homepage, create an account or sign in, then use the Upgrade to Pro button in the membership section. Checkout is handled by Stripe. Premium access depends on successful subscription activation.</p></details><details><summary>Can I cancel?</summary><p>Yes. You can manage or cancel billing through the <a href="https://billing.stripe.com/p/login/4gMbJ228p0oT7TK4PN7N600" rel="noopener noreferrer" target="_blank">Stripe customer portal</a> using your subscription email. Check the portal for the effective cancellation date.</p></details><details><summary>Will these scripts work in every environment?</summary><p>No. These are administrator resources that may require specific permissions, modules, configuration, or adaptation. Review and test each script in a lab before production use.</p></details><details><summary>Can I still use the free applications?</summary><p>Yes. The free scripts and browser-based IT applications remain accessible without a Pro subscription.</p></details></section>
 <section class="panel bottom-cta"><div class="eyebrow">Ready to explore Pro?</div><h2>65 Premium resources. $19/month.</h2><p>Create your free account or sign in on the homepage, then review the Pro membership and start secure Stripe checkout. No purchase is required to use free tools.</p><a class="btn primary" href="index.html#account">Sign in and review Pro →</a></section></main>
-<footer class="foot">© <span id="year"></span> AdminOps Toolkit · Independent educational resource, not affiliated with Microsoft. Payments and subscription management are handled by Stripe.</footer></div><script>document.getElementById('year').textContent=new Date().getFullYear()</script><script id="adminops-shared-nav-behavior">(()=>{const menus=[...document.querySelectorAll('.adminops-main-nav .adminops-nav-dropdown')];menus.forEach(menu=>menu.addEventListener('toggle',()=>{if(menu.open)menus.forEach(other=>{if(other!==menu)other.open=false})}));document.addEventListener('click',event=>{if(!event.target.closest('.adminops-main-nav .adminops-nav-dropdown'))menus.forEach(menu=>menu.open=false)});document.addEventListener('keydown',event=>{if(event.key==='Escape'){const active=menus.find(menu=>menu.open);if(active){active.open=false;active.querySelector('summary').focus()}}})})();</script></body></html>
+<footer class="foot">© <span id="year"></span> AdminOps Toolkit · Independent educational resource, not affiliated with Microsoft. Payments and subscription management are handled by Stripe.</footer></div><script>document.getElementById('year').textContent=new Date().getFullYear()</script><script id="adminops-shared-nav-behavior">(()=>{const menus=[...document.querySelectorAll('.adminops-main-nav .adminops-nav-dropdown')];menus.forEach(menu=>menu.addEventListener('toggle',()=>{if(menu.open)menus.forEach(other=>{if(other!==menu)other.open=false})}));document.addEventListener('click',event=>{if(!event.target.closest('.adminops-main-nav .adminops-nav-dropdown'))menus.forEach(menu=>menu.open=false)});document.addEventListener('keydown',event=>{if(event.key==='Escape'){const active=menus.find(menu=>menu.open);if(active){active.open=false;active.querySelector('summary').focus()}}})})();</script>
+<script id="adminops-pro-interest-ga4">
+// Step 18B: record interest on actual upgrade CTA clicks; no checkout changes.
+(function () {
+  document.addEventListener('click', function (event) {
+    var link = event.target.closest('a[href]');
+    if (!link) return;
+    var target = link.getAttribute('href');
+    if (target !== 'index.html#account' && target !== 'index.html#membership') return;
+    if (!link.classList.contains('btn') || !link.classList.contains('primary')) return;
+    if (typeof window.gtag !== 'function') return;
+    event.preventDefault();
+    var completed = false;
+    function navigate() { if (completed) return; completed = true; window.location.assign(link.href); }
+    try {
+      window.gtag('event', 'pro_interest', {
+        source_page: 'pro',
+        cta_text: (link.textContent || '').trim().slice(0, 100),
+        link_url: link.href,
+        transport_type: 'beacon',
+        event_callback: navigate,
+        event_timeout: 700
+      });
+    } catch (err) { navigate(); return; }
+    setTimeout(navigate, 750);
+  });
+})();
+</script>
+</body></html>
