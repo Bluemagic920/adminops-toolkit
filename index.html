@@ -402,7 +402,32 @@ document.addEventListener("click", function(event) {
   if (url.origin !== window.location.origin) return;
   const file = url.pathname.split("/").pop();
   const tools = ["intune-diagnostics-center.html", "sccm-query-builder.html", "windows-application-uninstaller-builder.html", "exchange-permission-analyzer.html", "troubleshooting-center.html", "applications.html"];
-  if (tools.includes(file)) adminOpsTrack("tool_launch", {tool_name: file, source_page: "homepage"});
+  if (tools.includes(file)) {
+    // Allow analytics to dispatch before same-tab navigation. Preserve modified clicks,
+    // new-tab links and downloads without interception.
+    const normalClick = event.button === 0 && !event.ctrlKey && !event.metaKey &&
+      !event.shiftKey && !event.altKey && !event.defaultPrevented &&
+      !link.hasAttribute("download") && (!link.target || link.target === "_self");
+    if (normalClick && typeof window.gtag === "function") {
+      event.preventDefault();
+      let navigated = false;
+      const proceed = function() {
+        if (navigated) return;
+        navigated = true;
+        window.location.assign(link.href);
+      };
+      window.gtag("event", "tool_launch", {
+        tool_name: file,
+        source_page: "homepage",
+        transport_type: "beacon",
+        event_callback: proceed,
+        event_timeout: 350
+      });
+      window.setTimeout(proceed, 400);
+    } else {
+      adminOpsTrack("tool_launch", {tool_name: file, source_page: "homepage", transport_type: "beacon"});
+    }
+  }
   if (file === "pro.html" || (url.pathname === window.location.pathname && url.hash === "#membership")) {
     adminOpsTrack("pro_interest", {source_page: "homepage", link_destination: file || "membership"});
   }
