@@ -61,6 +61,14 @@ gtag('config', 'G-W0PLMDQ7FC');
   <p>Need more detail on enrollment errors, <code>MdmDiagnosticsTool.exe</code>, DeviceManagement-Enterprise-Diagnostics-Provider event logs, or <code>dsregcmd /status</code>? Read the step-by-step guide, then return here to generate diagnostic commands.</p>
   <p><a href="intune-mdm-troubleshooting-guide.html" style="display:inline-block;padding:11px 16px;border-radius:9px;border:1px solid #69b9ff;background:#173653;color:#eaf5ff;font-weight:750;text-decoration:none">Read the free Intune MDM troubleshooting guide →</a></p>
 </section>
+<section class="panel" id="adminops-intune-pro-path" aria-labelledby="adminops-pro-heading" style="border-color:#456e9b;background:linear-gradient(135deg,#132e4d,#12233d)">
+  <div class="eyebrow">OPTIONAL NEXT STEP · ADMINOPS PRO</div>
+  <h2 id="adminops-pro-heading">Need more IT administration resources?</h2>
+  <p>Keep using this Intune Diagnostics Center and the troubleshooting guide for free. If you regularly manage Windows endpoints, SCCM, Microsoft 365, and Exchange Online, explore the broader AdminOps Pro resource library.</p>
+  <p><strong>AdminOps Pro: $19/month</strong> · Access to 65 Premium downloadable resources with an active membership. Review what's included before subscribing.</p>
+  <p><a id="adminops-intune-pro-link" href="pro.html?utm_source=intune_diagnostics_center&amp;utm_medium=internal&amp;utm_campaign=free_to_pro" style="display:inline-block;padding:12px 17px;border-radius:9px;background:#69b9ff;color:#071526;text-decoration:none;font-weight:800">Explore AdminOps Pro →</a></p>
+  <p class="muted">No sign-in or payment required to use this free diagnostic tool. Membership details and terms are available on the Pro page.</p>
+</section>
 </main>
 <script>
 'use strict';
@@ -72,4 +80,18 @@ function generate(){const entry=cmds[$('commandType').value];$('commandOutput').
 const errors={'0x80180014':['Enrollment is not allowed in this context.','Check Intune enrollment restrictions, device limits, and whether this enrollment method is permitted.'],'0x80180026':['Enrollment may be blocked by an existing management state or policy.','Check current management connections, enrollment restrictions, and relevant MDM event details before changing anything.'],'0x801c03f3':['A Microsoft Entra device registration or discovery step failed.','Inspect User Device Registration logs, join prerequisites, connectivity, and the device object state.'],'0x80072f87':['A secure connection or certificate/TLS validation issue may have occurred.','Check system clock, certificate trust, proxy or TLS inspection, and the full connection error.'],'0x80072ee7':['The destination name could not be resolved in this context.','Verify DNS configuration, proxy settings, and name resolution to the exact endpoint in the error.'],'0x80070005':['Access denied.','Check permissions and execution context; capture the operation and log that returned the code.']};function renderError(){const [meaning,action]=errors[$('errorCode').value];$('errorDetail').replaceChildren();for(const [head,value] of [['Possible meaning',meaning],['What to check',action]]){const h=document.createElement('h3');h.textContent=head;const p=document.createElement('p');p.textContent=value;$('errorDetail').append(h,p);}}$('errorCode').addEventListener('change',renderError);renderError();
 function makeReport(){const lines=['ADMINOPS TOOLKIT — INTUNE INCIDENT REPORT','Generated: '+new Date().toLocaleString(),'Device: '+($('device').value.trim()||'(not provided)'),'Issue: '+($('issue').value.trim()||'(not provided)'),'','OBSERVATIONS', $('observations').value.trim()||'(none)','', 'ACTIONS / NEXT STEPS', $('actionsTaken').value.trim()||'(none)','', 'Note: Findings must be verified by the assigned administrator.'];$('reportOutput').textContent=lines.join('\n');} $('makeReport').addEventListener('click',makeReport);$('copyReport').addEventListener('click',()=>{makeReport();copyText($('reportOutput').textContent);});$('saveReport').addEventListener('click',()=>{makeReport();download('intune-incident-report.txt',$('reportOutput').textContent);});
 async function copyText(value){try{await navigator.clipboard.writeText(value);$('feedback').textContent='Copied to clipboard.';}catch(e){$('feedback').textContent='Clipboard unavailable. Select the text and copy it manually.';}}function download(filename,value){const blob=new Blob([value],{type:'text/plain;charset=utf-8'});const url=URL.createObjectURL(blob);const a=document.createElement('a');a.href=url;a.download=filename;document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);$('feedback').textContent='Text file download started.';}
+</script><script id="adminops-intune-pro-tracking">
+(function(){
+  var link=document.getElementById('adminops-intune-pro-link');
+  if(!link)return;
+  link.addEventListener('click',function(){
+    if(typeof window.gtag==='function'){
+      window.gtag('event','pro_interest',{
+        source:'intune_diagnostics_center',
+        placement:'related_pro_resources',
+        destination:'pro_page'
+      });
+    }
+  });
+})();
 </script></body></html>
