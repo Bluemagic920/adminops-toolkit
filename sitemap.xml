@@ -94,6 +94,9 @@
     <loc>https://bluemagic920.github.io/adminops-toolkit/windows-user-profile-repair-toolkit.html</loc>
   </url>
   <url>
-  <loc>https://bluemagic920.github.io/adminops-toolkit/windows-application-uninstaller-builder.html</loc>
-</url>
+    <loc>https://bluemagic920.github.io/adminops-toolkit/windows-application-uninstaller-builder.html</loc>
+  </url>
+  <url>
+    <loc>https://bluemagic920.github.io/adminops-toolkit/intune-mdm-troubleshooting-guide.html</loc>
+  </url>
 </urlset>
