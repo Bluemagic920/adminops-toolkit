@@ -9,13 +9,13 @@ gtag('js', new Date());
 gtag('config', 'G-W0PLMDQ7FC');
 </script>
 <meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="description" content="Troubleshoot Microsoft Intune enrollment, device compliance, Entra ID join, MDM sync and DeviceManagement-Enterprise-Diagnostics-Provider events. Free diagnostic command builder and checklists.">
-<title>Microsoft Intune Troubleshooting &amp; MDM Diagnostics | AdminOps Toolkit</title>
+<meta name="description" content="Free Microsoft Intune diagnostics for Windows enrollment errors, device compliance, MDM event logs, dsregcmd and sync issues. Build read-only commands and checklists.">
+<title>Intune Diagnostics Center: Enrollment, MDM Logs &amp; Compliance | AdminOps</title>
 <link rel="canonical" href="https://bluemagic920.github.io/adminops-toolkit/intune-diagnostics-center.html">
 <meta name="robots" content="index,follow">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="AdminOps Toolkit">
-<meta property="og:title" content="Microsoft Intune Troubleshooting &amp; MDM Diagnostics | AdminOps Toolkit">
+<meta property="og:title" content="Intune Diagnostics Center: Enrollment, MDM Logs &amp; Compliance | AdminOps">
 <meta property="og:description" content="Free guided Intune enrollment, compliance, Entra join and Windows MDM event log troubleshooting tools.">
 <meta property="og:url" content="https://bluemagic920.github.io/adminops-toolkit/intune-diagnostics-center.html">
 <meta name="twitter:card" content="summary">
@@ -51,6 +51,8 @@ gtag('config', 'G-W0PLMDQ7FC');
 <p>Run <code>dsregcmd /status</code> locally to inspect join and registration indicators. Interpret <code>AzureAdJoined</code>, <code>DomainJoined</code>, and <code>WorkplaceJoined</code> according to the intended device configuration; being joined to Microsoft Entra ID does not, by itself, prove successful Intune enrollment.</p>
 <h3>Is Microsoft Intune down today?</h3>
 <p>If multiple devices start failing simultaneously, check your tenant's Microsoft 365 admin center <strong>Health → Service health</strong> information and your own network or authentication dependencies. This page provides device-level troubleshooting guidance, not real-time Intune outage information.</p>
+<h3>Step-by-step Intune MDM troubleshooting guide</h3>
+<p>For a detailed walkthrough of Windows enrollment failures, <code>MdmDiagnosticsTool.exe</code>, the <code>DeviceManagement-Enterprise-Diagnostics-Provider/Admin</code> log, and <code>dsregcmd /status</code>, see the <a href="intune-mdm-troubleshooting-guide.html">free Microsoft Intune MDM Troubleshooting Guide</a>. Use this Diagnostics Center to generate read-only commands while following the guide.</p>
 <h3>Related Windows and endpoint administration tools</h3>
 <p>Continue with the <a href="intune-device-compliance-analyzer.html">Intune Device Compliance Analyzer</a>, <a href="sccm-client-repair-toolkit.html">SCCM Client Repair Toolkit</a>, <a href="sccm-query-builder.html">SCCM Query Builder</a>, or <a href="windows-event-log-analyzer.html">Windows Event Log Analyzer</a>. For additional downloads, <a href="pro.html">explore AdminOps Toolkit Pro</a>.</p>
 <p class="muted">For current Microsoft service incidents, consult your organization's Microsoft 365 admin center Service health dashboard. Always verify remediation against official Microsoft documentation.</p>
