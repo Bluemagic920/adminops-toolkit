@@ -85,6 +85,13 @@
 <p>Download the free Windows Update Manager ZIP from the public GitHub Release. No Pro subscription is required. Review the included instructions and use appropriate administrator permissions when managing updates.</p>
 <div class="actions"><a class="btn primary" href="https://github.com/bluemagic920/adminops-toolkit/releases/tag/windows-update-manager-free-v1.0.0" target="_blank" rel="noopener noreferrer">Get Free Windows Update Manager ZIP →</a><a class="btn" href="applications.html">View IT Applications →</a></div>
 <p class="download-note">On GitHub, select the ZIP under Assets to download.</p>
+</section><section class="panel" id="premium-adminops-command-center" aria-labelledby="adminops-command-center-title" style="position:relative;border-color:#76505a">
+<span style="position:absolute;right:0;top:0;background:#d71920;color:white;font-size:.8rem;font-weight:900;letter-spacing:.1em;padding:7px 20px;border-radius:0 14px 0 12px">NEW</span>
+<div class="eyebrow">Premium Windows application · Step 827Z</div>
+<h2 id="adminops-command-center-title">AdminOps IT Command Center</h2>
+<p>Windows installer with Local/Domain login, computer inventory, remote administration tools, Exchange management, software deployment and the flat global cyber threat map. Some remote functions have not been fully tested.</p>
+<div class="actions"><button class="btn primary" type="button" id="command-center-premium-download">Download Windows Installer →</button><a class="btn" href="account.html">Check Pro membership →</a></div>
+<p id="command-center-premium-message" class="download-note" role="status" aria-live="polite">Requires an active Pro subscription. Authorization is checked by the Cloudflare Worker.</p>
 </section><section class="panel" id="premium-driver-manager" aria-labelledby="premium-driver-title">
 <div class="eyebrow">Premium Windows administration</div>
 <h2 id="premium-driver-title">Driver &amp; Device Manager Premium v1.0.0</h2>
@@ -326,6 +333,40 @@ document.getElementById('wum-premium-download').addEventListener('click', async 
   }finally{setTimeout(()=>URL.revokeObjectURL(objectUrl),60000);}
   message.textContent='Premium installer ZIP download started.';
  }catch(error){message.textContent=error.message||'Download failed.';}
+ finally{button.disabled=false;}
+});
+
+
+// AdminOps IT Command Center — protected download. The R2 key must match exactly.
+document.getElementById('command-center-premium-download').addEventListener('click', async () => {
+ const button=document.getElementById('command-center-premium-download');
+ const message=document.getElementById('command-center-premium-message');
+ const filename='AdminOps-IT-Command-Center-Setup-827Z.exe';
+ button.disabled=true;
+ message.textContent='Verifying Pro subscription and preparing secure installer…';
+ try {
+  if(!memberClient)throw new Error('Authentication unavailable. Refresh the page.');
+  const {data,error}=await memberClient.auth.getSession();
+  if(error)throw error;
+  const token=data.session?.access_token;
+  if(!token)throw new Error('Please sign in to download AdminOps IT Command Center.');
+  const response=await fetch(API_URL+'/api/download?file='+encodeURIComponent(filename),{
+   method:'GET',headers:{Authorization:'Bearer '+token},cache:'no-store'
+  });
+  if(!response.ok){
+   let detail='';try{const body=await response.json();detail=body.error||body.message||'';}catch(_){}
+   if(response.status===401)throw new Error('Please sign in again to download.');
+   if(response.status===403)throw new Error('An active Pro subscription is required. Check My Account.');
+   if(response.status===404)throw new Error('Installer not found or not allowed by the download server. Verify the R2 object key and Worker configuration.');
+   throw new Error(detail||('Download failed (HTTP '+response.status+').'));
+  }
+  const blob=await response.blob();
+  if(!blob.size)throw new Error('Server returned an empty installer.');
+  const url=URL.createObjectURL(blob);
+  try{const link=document.createElement('a');link.href=url;link.download=filename;document.body.appendChild(link);link.click();link.remove();}
+  finally{setTimeout(()=>URL.revokeObjectURL(url),60000);}
+  message.textContent='Windows installer download started.';
+ }catch(e){message.textContent=e.message||'Download failed.';}
  finally{button.disabled=false;}
 });
 
